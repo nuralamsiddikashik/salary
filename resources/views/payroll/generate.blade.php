@@ -3,300 +3,499 @@
 @section('content')
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-    .form-wrapper * { font-family: 'Syne', sans-serif; }
-    .mono { font-family: 'Space Mono', monospace; }
-
-    .accent-line {
-        height: 3px;
-        background: linear-gradient(90deg, #f59e0b, #ef4444, transparent);
+    :root {
+        --bg:             #f5f5f0;
+        --surface:        #ffffff;
+        --border:         #e2e2dc;
+        --border-md:      #d0d0c8;
+        --text-primary:   #1a1a18;
+        --text-secondary: #5a5a54;
+        --text-muted:     #9a9a92;
+        --accent:         #1a3a5c;
+        --accent-lt:      #e8eef4;
+        --gold:           #8a6a00;
+        --gold-lt:        #fdf6e3;
+        --green:          #1a5c3a;
+        --green-lt:       #e8f4ee;
+        --red:            #8a1a1a;
+        --red-lt:         #fdf0f0;
     }
 
-    .noise-overlay {
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-        pointer-events: none;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .fw * { font-family: 'DM Sans', sans-serif; }
+
+    .fw {
+        min-height: 100vh;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
     }
 
-    .card-glow {
-        box-shadow:
-            0 0 0 1px rgba(245, 158, 11, 0.1),
-            0 25px 50px -12px rgba(0, 0, 0, 0.8),
-            inset 0 1px 0 rgba(255,255,255,0.03);
+    .form-shell { width: 100%; max-width: 500px; }
+
+    /* Flash messages */
+    .flash {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.7rem 1rem;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    .flash-success {
+        background: var(--green-lt);
+        border: 1px solid #b6d9c5;
+        color: var(--green);
+    }
+    .flash-error {
+        background: var(--red-lt);
+        border: 1px solid #e8c5c5;
+        color: var(--red);
+    }
+    .flash svg { flex-shrink: 0; }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { opacity: 0.4; }
+    .breadcrumb .current { color: var(--text-primary); font-weight: 600; }
+
+    .form-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
     }
 
-    .input-field {
-        background: transparent;
-        border: none;
-        border-bottom: 2px solid #374151;
-        border-radius: 0;
-        transition: border-color 0.3s ease;
-        color: #f9fafb;
-        padding: 0.5rem 0;
-        width: 100%;
-        outline: none;
-        font-size: 0.9rem;
-        font-family: 'Space Mono', monospace;
+    .card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.4rem 1.75rem;
+        border-bottom: 1px solid var(--border);
     }
-    /* Calendar icon color control */
-    .input-field { color-scheme: dark; }
-    
-    .input-field:focus { border-bottom-color: #f59e0b; }
-    .input-field::placeholder { color: #4b5563; }
-
-    .select-field {
-        background: transparent;
-        border: none;
-        border-bottom: 2px solid #374151;
-        border-radius: 0;
-        transition: border-color 0.3s ease;
-        color: #f9fafb;
-        padding: 0.5rem 0;
-        width: 100%;
-        outline: none;
-        font-size: 0.9rem;
-        cursor: pointer;
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.25rem center;
-        background-size: 1.1rem;
-        padding-right: 1.75rem;
-    }
-    .select-field:focus { border-bottom-color: #f59e0b; }
-    .select-field option { background: #1f2937; color: #f9fafb; }
-
-    .label-text {
-        font-size: 0.6rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: #f59e0b;
+    .card-head .eyebrow {
+        font-size: 0.62rem;
         font-weight: 600;
-        font-family: 'Space Mono', monospace;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-family: 'DM Mono', monospace;
+        margin-bottom: 0.3rem;
+    }
+    .card-head h1 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
     }
 
-    .step-number {
-        font-family: 'Space Mono', monospace;
-        font-size: 0.6rem;
-        color: #374151;
+    .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.9rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-md);
+        background: var(--bg);
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+
+    .card-body { padding: 1.75rem; }
+
+    .field-group { display: flex; flex-direction: column; gap: 1.4rem; }
+
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .field-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    /* Month quick-select pills */
-    .month-pill {
-        font-family: 'Space Mono', monospace;
+    .field label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .field-num {
+        font-family: 'DM Mono', monospace;
         font-size: 0.6rem;
-        padding: 0.25rem 0.6rem;
-        border-radius: 999px;
-        border: 1px solid #374151;
-        color: #6b7280;
+        color: var(--border-md);
+    }
+
+    .field input,
+    .field select {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border-md);
+        border-radius: 6px;
+        color: var(--text-primary);
+        padding: 0.6rem 0.85rem;
+        font-size: 0.85rem;
+        font-family: 'DM Sans', sans-serif;
+        outline: none;
+        transition: border-color 0.15s, background 0.15s;
+    }
+    .field input:focus,
+    .field select:focus { border-color: var(--accent); background: var(--surface); }
+    .field input::placeholder { color: var(--text-muted); font-size: 0.82rem; }
+
+    .field select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235a5a54'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 0.9rem;
+        padding-right: 2.2rem;
         cursor: pointer;
-        transition: all 0.2s ease;
+    }
+    .field select option { background: #fff; color: var(--text-primary); }
+
+    input[type="month"] { color-scheme: light; }
+    input[type="month"]::-webkit-calendar-picker-indicator { opacity: 0.4; cursor: pointer; }
+    input[type="month"]::-webkit-calendar-picker-indicator:hover { opacity: 0.8; }
+
+    /* Field hint */
+    .field-hint {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        font-family: 'DM Mono', monospace;
+        margin-top: 0.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .field-hint .available { font-weight: 600; color: var(--green); }
+    .field-hint .warn      { color: var(--red); }
+
+    /* Month pills */
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+
+    .month-pill {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 500;
+        padding: 0.25rem 0.65rem;
+        border-radius: 4px;
+        border: 1px solid var(--border-md);
+        color: var(--text-muted);
+        background: var(--bg);
+        cursor: pointer;
+        transition: all 0.15s;
         white-space: nowrap;
     }
-    .month-pill:hover, .month-pill.active {
-        border-color: rgba(245,158,11,0.5);
-        color: #fbbf24;
-        background: rgba(245,158,11,0.06);
-    }
+    .month-pill:hover,
+    .month-pill.active { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
 
-    /* Absent day stepper */
+    /* Stepper */
+    .stepper-wrap { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem; }
+
     .stepper-btn {
-        width: 2rem; height: 2rem;
-        border-radius: 0.5rem;
-        border: 1px solid #374151;
-        color: #9ca3af;
-        background: transparent;
-        font-size: 1rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-md);
+        background: var(--bg);
+        color: var(--text-secondary);
+        font-size: 1.1rem;
         cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         flex-shrink: 0;
+        transition: all 0.15s;
+        font-family: 'DM Sans', sans-serif;
     }
-    .stepper-btn:hover {
-        border-color: rgba(245,158,11,0.5);
-        color: #f59e0b;
-        background: rgba(245,158,11,0.06);
-    }
+    .stepper-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+
     .stepper-display {
-        font-family: 'Space Mono', monospace;
+        font-family: 'DM Mono', monospace;
         font-size: 1.4rem;
         font-weight: 700;
-        color: #f9fafb;
-        min-width: 3rem;
+        color: var(--text-primary);
+        min-width: 2.5rem;
         text-align: center;
         background: transparent;
         border: none;
         outline: none;
     }
-    .stepper-display.has-absent { color: #f87171; }
+    .stepper-display.has-absent { color: var(--red); }
 
-    .submit-btn {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    .submit-btn::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-        transition: left 0.5s ease;
-    }
-    .submit-btn:hover::before { left: 100%; }
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-        background-color: #fbbf24;
+    .stepper-unit {
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
     }
 
-    .back-btn { transition: all 0.2s ease; }
-    .back-btn:hover {
-        border-color: #6b7280;
-        color: #d1d5db;
-        transform: translateY(-1px);
-    }
-
+    /* Preview box */
     .preview-box {
-        background: rgba(245, 158, 11, 0.04);
-        border: 1px solid rgba(245, 158, 11, 0.12);
-        border-radius: 0.75rem;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
         padding: 1rem 1.25rem;
+        margin-top: 1.5rem;
+    }
+
+    .preview-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.85rem;
+    }
+
+    .preview-grid { display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; }
+
+    .preview-item { flex: 1; text-align: center; }
+
+    .preview-item-label {
+        font-size: 0.58rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    .preview-item-value {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .preview-divider { width: 1px; height: 2rem; background: var(--border-md); flex-shrink: 0; }
+
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .actions { display: flex; gap: 0.75rem; }
+
+    .btn-submit {
+        flex: 1;
+        background: var(--accent);
+        color: #fff;
+        border: 1px solid var(--accent);
+        border-radius: 6px;
+        padding: 0.7rem 1.25rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        transition: background 0.15s, transform 0.15s;
+    }
+    .btn-submit:hover { background: #142d47; transform: translateY(-1px); }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.7rem 1.1rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-md);
+        background: var(--surface);
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+    .btn-back:hover { color: var(--text-primary); background: var(--bg); }
+
+    .form-note {
+        text-align: center;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        font-family: 'DM Mono', monospace;
+        margin-top: 1rem;
     }
 </style>
 
-<div class="form-wrapper min-h-screen bg-gray-950 flex items-center justify-center p-6">
+<div class="fw">
+    <div class="form-shell">
 
-    <div class="fixed inset-0 pointer-events-none opacity-5"
-         style="background-image: linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px); background-size: 40px 40px;"></div>
-    <div class="noise-overlay fixed inset-0"></div>
+        {{-- Flash Messages --}}
+        @if(session('success'))
+        <div class="flash flash-success">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            {{ session('success') }}
+        </div>
+        @endif
 
-    <div class="relative w-full max-w-lg">
+        @if(session('error'))
+        <div class="flash flash-error">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            {{ session('error') }}
+        </div>
+        @endif
 
-        {{-- Top strip --}}
-        <div class="flex items-center gap-3 mb-6">
-            <div class="accent-line flex-1"></div>
-            <span class="mono text-xs text-gray-500 tracking-widest">PAYROLL MANAGEMENT</span>
-            <div class="accent-line flex-1"></div>
+        <div class="breadcrumb">
+            <a href="{{ route('employee.list') }}">Employees</a>
+            <span class="sep">></span>
+            <span class="current">Generate Salary</span>
         </div>
 
-        {{-- Card --}}
-        <div class="card-glow relative bg-gray-900 rounded-2xl overflow-hidden border border-gray-800">
+        <div class="form-card">
 
-            <div class="accent-line"></div>
-
-            {{-- Header --}}
-            <div class="px-8 pt-8 pb-6 flex items-start justify-between border-b border-gray-800">
+            <div class="card-head">
                 <div>
-                    <p class="label-text mb-1">New Record</p>
-                    <h1 class="text-3xl font-extrabold text-white tracking-tight" style="font-family: 'Syne', sans-serif;">
-                        Generate Salary
-                    </h1>
-                    <p class="mono text-xs text-gray-600 mt-1 tracking-wide">MONTHLY PAYROLL</p>
+                    <div class="eyebrow">Payroll Management</div>
+                    <h1>Generate Salary</h1>
                 </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('employee.list') }}"
-                       class="flex items-center gap-2 border border-gray-700 hover:border-amber-500 hover:border-opacity-50 text-gray-400 hover:text-amber-400 font-semibold py-2 px-4 rounded-xl text-xs tracking-widest transition-all duration-200"
-                       style="font-family: 'Space Mono', monospace;">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                        </svg>
-                        EMPLOYEES
-                    </a>
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center"
-                         style="background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2);">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                </div>
+                <a href="{{ route('employee.list') }}" class="btn-ghost">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                    Employees
+                </a>
             </div>
 
-            {{-- Form --}}
-            <div class="px-8 py-8">
+            <div class="card-body">
                 <form action="{{ route('payroll.generate') }}" method="POST">
                     @csrf
 
-                    <div class="space-y-8">
+                    <div class="field-group">
 
-                        {{-- Employee --}}
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="label-text">Employee</label>
-                                <span class="step-number">01</span>
+                        {{-- 01: Employee --}}
+                        <div class="field">
+                            <div class="field-row">
+                                <label for="employee_id">Employee</label>
+                                <span class="field-num">01</span>
                             </div>
-                            <select name="employee_id" class="select-field" required>
+                            <select name="employee_id" id="employee_id" required>
                                 <option value="" disabled selected>Select an employee...</option>
                                 @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                    <option value="{{ $employee->id }}"
+                                            data-total-leave="{{ $employee->total_leave ?? 0 }}"
+                                            data-used-leave="{{ $employee->used_leave ?? 0 }}">
+                                        {{ $employee->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
 
-                        {{-- Month (Updated to type="month") --}}
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="label-text">Month</label>
-                                <span class="step-number">02</span>
+                        {{-- 02: Month --}}
+                        <div class="field">
+                            <div class="field-row">
+                                <label for="month_input">Month</label>
+                                <span class="field-num">02</span>
                             </div>
-                            <input type="month" name="month" id="month_input"
-                                   class="input-field" required>
-                            {{-- Quick select pills --}}
-                            <div class="flex flex-wrap gap-2 mt-3" id="month-pills"></div>
+                            <input type="month" name="month" id="month_input" required>
+                            <div class="pill-row" id="month-pills"></div>
                         </div>
 
-                        {{-- Absent Days --}}
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="label-text">Absent Days</label>
-                                <span class="step-number">03</span>
+                        {{-- 03: Absent Days --}}
+                        <div class="field">
+                            <div class="field-row">
+                                <label>Absent Days</label>
+                                <span class="field-num">03</span>
                             </div>
-                            {{-- Hidden input for form submission --}}
                             <input type="hidden" name="absent_days" id="absent_days_value" value="0">
-                            <div class="flex items-center gap-4 mt-1">
-                                <button type="button" class="stepper-btn" id="btn-minus">−</button>
+                            <div class="stepper-wrap">
+                                <button type="button" class="stepper-btn" id="btn-minus">&#8722;</button>
                                 <input type="text" id="absent_display" class="stepper-display" value="0" readonly>
                                 <button type="button" class="stepper-btn" id="btn-plus">+</button>
-                                <span class="mono text-xs text-gray-600 tracking-widest ml-2">DAY(S)</span>
+                                <span class="stepper-unit">Day(s)</span>
+                            </div>
+                        </div>
+
+                        {{-- 04: Leave Days --}}
+                        {{--
+                            Controller logic:
+                            - leave_days <= absent_days হতে হবে
+                            - leave_days <= employee.remaining_leave হতে হবে
+                            - Leave কাটলে সেই দিনের salary deduct হবে না
+                        --}}
+                        <div class="field">
+                            <div class="field-row">
+                                <label for="leave_days">Leave Days</label>
+                                <span class="field-num">04</span>
+                            </div>
+                            <input type="number" name="leave_days" id="leave_days"
+                                   value="{{ old('leave_days', 0) }}" min="0" placeholder="0">
+                            <div class="field-hint">
+                                Remaining leave:
+                                <span class="available" id="remaining_leave">—</span>
+                                <span id="leave_warn" class="warn" style="display:none;">
+                                    Exceeds limit!
+                                </span>
                             </div>
                         </div>
 
                     </div>
 
                     {{-- Preview --}}
-                    <div class="preview-box mt-8">
-                        <p class="label-text mb-3">Payroll Preview</p>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="mono text-xs text-gray-600 tracking-widest mb-1">PERIOD</p>
-                                <p class="mono text-sm font-bold text-amber-400" id="preview-month">—</p>
+                    <div class="preview-box">
+                        <div class="preview-label">Payroll Preview</div>
+                        <div class="preview-grid">
+                            <div class="preview-item">
+                                <div class="preview-item-label">Period</div>
+                                <div class="preview-item-value" id="preview-month">—</div>
                             </div>
-                            <div class="w-px h-8 bg-gray-800"></div>
-                            <div>
-                                <p class="mono text-xs text-gray-600 tracking-widest mb-1">EMPLOYEE</p>
-                                <p class="mono text-sm font-bold text-white" id="preview-employee">—</p>
+                            <div class="preview-divider"></div>
+                            <div class="preview-item">
+                                <div class="preview-item-label">Employee</div>
+                                <div class="preview-item-value" id="preview-employee">—</div>
                             </div>
-                            <div class="w-px h-8 bg-gray-800"></div>
-                            <div class="text-right">
-                                <p class="mono text-xs text-gray-600 tracking-widest mb-1">ABSENT</p>
-                                <p class="mono text-sm font-bold" id="preview-absent">0 day(s)</p>
+                            <div class="preview-divider"></div>
+                            <div class="preview-item">
+                                <div class="preview-item-label">Absent</div>
+                                <div class="preview-item-value" id="preview-absent">0 day(s)</div>
+                            </div>
+                            <div class="preview-divider"></div>
+                            <div class="preview-item">
+                                <div class="preview-item-label">Leave</div>
+                                <div class="preview-item-value" id="preview-leave">0 day(s)</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="border-t border-gray-800 my-8"></div>
+                    <div class="divider"></div>
 
-                    {{-- Actions --}}
-                    <div class="flex items-center gap-4">
-                        <button type="submit"
-                                class="submit-btn flex-1 bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold py-3.5 px-6 rounded-xl tracking-wide text-sm">
+                    <div class="actions">
+                        <button type="submit" class="btn-submit">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 20h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
                             Generate Salary
                         </button>
-                        <a href="{{ route('employee.list') }}"
-                           class="back-btn flex items-center gap-2 border border-gray-700 text-gray-400 font-semibold py-3.5 px-5 rounded-xl text-sm tracking-wide">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ route('employee.list') }}" class="btn-back">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                             </svg>
                             Back
@@ -306,92 +505,126 @@
                 </form>
             </div>
 
-            {{-- Corner decoration --}}
-            <div class="absolute bottom-0 right-0 w-24 h-24 pointer-events-none opacity-5">
-                <svg viewBox="0 0 100 100" fill="none">
-                    <circle cx="100" cy="100" r="60" stroke="#f59e0b" stroke-width="1"/>
-                    <circle cx="100" cy="100" r="40" stroke="#f59e0b" stroke-width="1"/>
-                    <circle cx="100" cy="100" r="20" stroke="#f59e0b" stroke-width="1"/>
-                </svg>
-            </div>
-
         </div>
 
-        <p class="mono text-center text-xs text-gray-700 mt-5 tracking-widest">ALL FIELDS REQUIRED</p>
+        <p class="form-note">All fields are required</p>
 
     </div>
 </div>
 
 <script>
-    // ── Month quick-select pills ──
+    // ── Month pills ──
     const monthInput   = document.getElementById('month_input');
     const pillsWrapper = document.getElementById('month-pills');
     const previewMonth = document.getElementById('preview-month');
 
-    function formatPreviewDate(value) {
+    function formatMonth(value) {
         if (!value) return '—';
         const [year, month] = value.split('-');
-        const date = new Date(year, month - 1);
-        return date.toLocaleString('default', { month: 'short' }).toUpperCase() + ' ' + year;
+        const d = new Date(year, month - 1);
+        return d.toLocaleString('default', { month: 'short' }).toUpperCase() + ' ' + year;
     }
 
     const now = new Date();
     for (let i = 0; i < 4; i++) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const year = d.getFullYear();
+        const d     = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const year  = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
-        const val = `${year}-${month}`;
-        
+        const val   = `${year}-${month}`;
         const label = d.toLocaleString('default', { month: 'short' }) + ' ' + year;
+
         const pill = document.createElement('button');
-        pill.type = 'button';
-        pill.className = 'month-pill' + (i === 0 ? ' active' : '');
+        pill.type        = 'button';
+        pill.className   = 'month-pill' + (i === 0 ? ' active' : '');
         pill.textContent = label;
         pill.dataset.value = val;
 
-        if (i === 0) { 
-            monthInput.value = val; 
-            previewMonth.textContent = formatPreviewDate(val); 
+        if (i === 0) {
+            monthInput.value = val;
+            previewMonth.textContent = formatMonth(val);
         }
 
         pill.addEventListener('click', () => {
             document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
             monthInput.value = val;
-            previewMonth.textContent = formatPreviewDate(val);
+            previewMonth.textContent = formatMonth(val);
         });
+
         pillsWrapper.appendChild(pill);
     }
 
-    // Update preview when calendar input changes
     monthInput.addEventListener('input', () => {
         document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
-        previewMonth.textContent = formatPreviewDate(monthInput.value);
+        previewMonth.textContent = formatMonth(monthInput.value);
     });
 
-    // ── Absent days stepper ──
-    let absentDays = 0;
+    // ── Absent stepper ──
+    let absentDays   = 0;
     const display    = document.getElementById('absent_display');
     const hidden     = document.getElementById('absent_days_value');
     const previewAbs = document.getElementById('preview-absent');
 
     function updateAbsent() {
-        display.value  = absentDays;
-        hidden.value   = absentDays;
+        display.value     = absentDays;
+        hidden.value      = absentDays;
         display.className = 'stepper-display' + (absentDays > 0 ? ' has-absent' : '');
-        previewAbs.textContent  = absentDays + ' day(s)';
-        previewAbs.style.color  = absentDays > 0 ? '#f87171' : '#34d399';
+        previewAbs.textContent = absentDays + ' day(s)';
+        previewAbs.style.color = absentDays > 0 ? 'var(--red)' : 'var(--green)';
+
+        // Leave cannot exceed absent — revalidate
+        validateLeave();
     }
 
     document.getElementById('btn-plus').addEventListener('click',  () => { absentDays++; updateAbsent(); });
     document.getElementById('btn-minus').addEventListener('click', () => { if (absentDays > 0) { absentDays--; updateAbsent(); } });
 
-    // ── Employee preview ──
-    const empSelect      = document.querySelector('select[name="employee_id"]');
-    const previewEmployee = document.getElementById('preview-employee');
-    empSelect.addEventListener('change', () => {
-        previewEmployee.textContent = empSelect.options[empSelect.selectedIndex].text || '—';
+    // ── Employee select → leave data ──
+    const empSelect      = document.getElementById('employee_id');
+    const previewEmp     = document.getElementById('preview-employee');
+    const remainingLeave = document.getElementById('remaining_leave');
+    const leaveWarn      = document.getElementById('leave_warn');
+    const leaveInput     = document.getElementById('leave_days');
+    const previewLeave   = document.getElementById('preview-leave');
+
+    let maxLeave = 0; // employee remaining leave
+
+    empSelect.addEventListener('change', function () {
+        const selected  = empSelect.options[empSelect.selectedIndex];
+        previewEmp.textContent = selected.text || '—';
+
+        const totalLeave = parseInt(selected.getAttribute('data-total-leave')) || 0;
+        const usedLeave  = parseInt(selected.getAttribute('data-used-leave'))  || 0;
+        maxLeave = Math.max(0, totalLeave - usedLeave);
+
+        remainingLeave.textContent = maxLeave + ' day(s)';
+
+        // Reset leave input on employee change
+        leaveInput.value = 0;
+        previewLeave.textContent = '0 day(s)';
+        previewLeave.style.color = '';
+        leaveWarn.style.display  = 'none';
+        leaveInput.style.borderColor = '';
     });
+
+    // ── Leave days validation & preview ──
+    function validateLeave() {
+        const val  = parseInt(leaveInput.value) || 0;
+        const limit = Math.min(maxLeave, absentDays); // cannot exceed either
+
+        previewLeave.textContent = val + ' day(s)';
+        previewLeave.style.color = val > 0 ? 'var(--gold)' : '';
+
+        if (val > limit) {
+            leaveWarn.style.display  = 'inline';
+            leaveInput.style.borderColor = 'var(--red)';
+        } else {
+            leaveWarn.style.display  = 'none';
+            leaveInput.style.borderColor = '';
+        }
+    }
+
+    leaveInput.addEventListener('input', validateLeave);
 
     updateAbsent();
 </script>

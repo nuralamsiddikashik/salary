@@ -15,11 +15,16 @@ class EmployeeFactory extends Factory {
 
             'total_salary' => $totalSalary,
 
-            // Fixed breakdown (example 50/30/10/10)
+            // Salary Breakdown (50/30/10/10)
             'basic_salary' => $totalSalary * 0.50,
             'house_rent'   => $totalSalary * 0.30,
             'medical'      => $totalSalary * 0.10,
             'conveyance'   => $totalSalary * 0.10,
+
+            // ✅ Leave System Default
+            'total_leave'  => 18,
+            'used_leave'   => 0,
+            'leave_year'   => now()->year,
         ];
     }
 }

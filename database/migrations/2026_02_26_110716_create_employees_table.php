@@ -21,6 +21,10 @@ return new class extends Migration {
             $table->decimal( 'medical', 12, 2 );
             $table->decimal( 'conveyance', 12, 2 );
 
+            $table->integer( 'total_leave' )->default( 18 );
+            $table->integer( 'used_leave' )->default( 0 );
+            $table->integer( 'leave_year' )->default( now()->year );
+
             $table->timestamps();
         } );
     }

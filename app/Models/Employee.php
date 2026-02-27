@@ -16,6 +16,9 @@ class Employee extends Model {
         'house_rent',
         'medical',
         'conveyance',
+        'total_leave',
+        'used_leave',
+        'leave_year',
     ];
 
     // ✅ Payroll Relation
@@ -31,5 +34,10 @@ class Employee extends Model {
     // Optional: Latest Payroll
     public function latestPayroll() {
         return $this->hasOne( \App\Models\Payroll::class )->latestOfMany();
+    }
+
+    // Remaining Leave Accessor
+    public function getRemainingLeaveAttribute() {
+        return $this->total_leave - $this->used_leave;
     }
 }
