@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class PayrollController extends Controller {
-    // 🔹 Show Generate Form (GET)
+
     public function create() {
         $employees = Employee::all();
         return view( 'payroll.generate', compact( 'employees' ) );
@@ -26,7 +26,6 @@ class PayrollController extends Controller {
 
         $month = Carbon::parse( $request->month )->format( 'Y-m' );
 
-        // 🔴 Prevent duplicate salary
         if ( Payroll::where( 'employee_id', $employee->id )
             ->where( 'month', $month )
             ->exists() ) {
@@ -34,7 +33,6 @@ class PayrollController extends Controller {
             return back()->with( 'error', 'Salary already generated for this month' );
         }
 
-        // 🔄 Yearly Leave Reset
         $currentYear = Carbon::parse( $month )->year;
 
         if ( $employee->leave_year != $currentYear ) {
@@ -46,10 +44,8 @@ class PayrollController extends Controller {
         $absentDays = $request->absent_days;
         $leaveDays  = $request->leave_days ?? 0;
 
-        // Get total days in month (28/29/30/31 auto)
         $daysInMonth = Carbon::parse( $month . '-01' )->daysInMonth;
 
-        // Absent validation
         if ( $absentDays > $daysInMonth ) {
             return back()->with( 'error', 'Absent days cannot exceed total days of month' );
         }
@@ -62,18 +58,14 @@ class PayrollController extends Controller {
             return back()->with( 'error', 'Not enough leave available' );
         }
 
-        // Salary cut days
         $salaryCutDays = $absentDays - $leaveDays;
 
-        // Calendar based salary calculation
         $dailySalary  = round( $employee->total_salary / $daysInMonth, 2 );
         $absentAmount = round( $dailySalary * $salaryCutDays, 2 );
 
-        // Update leave usage
         $employee->used_leave += $leaveDays;
         $employee->save();
 
-        // Loan deduction (optional)
         $loan = $employee->loans()
             ->where( 'remaining_amount', '>', 0 )
             ->first();

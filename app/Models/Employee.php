@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SalaryPayment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,5 +40,9 @@ class Employee extends Model {
     // Remaining Leave Accessor
     public function getRemainingLeaveAttribute() {
         return $this->total_leave - $this->used_leave;
+    }
+
+    public function salaryPayments() {
+        return $this->hasMany( SalaryPayment::class );
     }
 }

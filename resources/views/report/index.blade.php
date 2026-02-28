@@ -5,7 +5,6 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-    /* ── Variables ── */
     :root {
         --bg:         #f5f5f0;
         --surface:    #ffffff;
@@ -25,7 +24,6 @@
     }
 
     * { box-sizing: border-box; }
-
     .pw * { font-family: 'Inter', sans-serif; }
     .mono { font-family: 'DM Mono', monospace; }
 
@@ -94,18 +92,10 @@
         font-family: 'Inter', sans-serif;
     }
 
-    .btn-primary {
-        background: var(--accent);
-        color: #fff;
-        border-color: var(--accent);
-    }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
     .btn-primary:hover { background: #142d47; }
 
-    .btn-outline {
-        background: var(--surface);
-        color: var(--text-primary);
-        border-color: var(--border-md);
-    }
+    .btn-outline { background: var(--surface); color: var(--text-primary); border-color: var(--border-md); }
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Filter Card ── */
@@ -173,15 +163,9 @@
     }
 
     .filter-field select option { background: #fff; color: var(--text-primary); }
+    input[type="month"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
 
-    input[type="month"]::-webkit-calendar-picker-indicator {
-        opacity: 0.5; cursor: pointer;
-    }
-
-    .filter-actions {
-        display: flex;
-        gap: 0.5rem;
-    }
+    .filter-actions { display: flex; gap: 0.5rem; }
 
     .btn-filter {
         flex: 1;
@@ -248,10 +232,7 @@
     }
 
     /* ── Table ── */
-    .tbl-wrap {
-        width: 100%;
-        overflow-x: auto;
-    }
+    .tbl-wrap { width: 100%; overflow-x: auto; }
     .tbl-wrap::-webkit-scrollbar { height: 4px; }
     .tbl-wrap::-webkit-scrollbar-track { background: var(--bg); }
     .tbl-wrap::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
@@ -265,7 +246,6 @@
         letter-spacing: -0.01em;
     }
 
-    /* Column widths */
     .rpt-table colgroup col:nth-child(1)  { width: 4%; }
     .rpt-table colgroup col:nth-child(2)  { width: 8%; }
     .rpt-table colgroup col:nth-child(3)  { width: 6%; }
@@ -297,23 +277,9 @@
         text-align: center;
     }
 
-    .grp-emp {
-        background: var(--accent-lt);
-        color: var(--accent);
-        border-bottom: 2px solid #c5d4e3;
-    }
-
-    .grp-pay {
-        background: var(--gold-lt);
-        color: var(--gold);
-        border-bottom: 2px solid #e8d8a0;
-    }
-
-    .grp-loan {
-        background: var(--red-lt);
-        color: var(--red);
-        border-bottom: 2px solid #e8c5c5;
-    }
+    .grp-emp  { background: var(--accent-lt); color: var(--accent); border-bottom: 2px solid #c5d4e3; }
+    .grp-pay  { background: var(--gold-lt);   color: var(--gold);   border-bottom: 2px solid #e8d8a0; }
+    .grp-loan { background: var(--red-lt);    color: var(--red);    border-bottom: 2px solid #e8c5c5; }
 
     /* Col headers */
     .col-hd {
@@ -332,10 +298,7 @@
     }
 
     /* Body rows */
-    .rpt-table tbody tr {
-        border-bottom: 1px solid var(--border);
-        transition: background 0.1s;
-    }
+    .rpt-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
     .rpt-table tbody tr:hover { background: #f9f9f6; }
     .rpt-table tbody tr:last-child { border-bottom: none; }
 
@@ -395,8 +358,6 @@
         font-family: 'DM Mono', monospace;
     }
 
-    .loan-col-item {}
-
     .slip-btn {
         display: inline-flex;
         align-items: center;
@@ -413,6 +374,40 @@
     }
     .slip-btn:hover { background: var(--green); color: #fff; }
 
+    .pay-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        background: var(--accent-lt);
+        color: var(--accent);
+        border: 1px solid #c5d4e3;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.15s;
+        white-space: nowrap;
+    }
+    .pay-btn:hover { background: var(--accent); color: #fff; }
+    .pay-btn:hover svg { stroke: #fff; }
+    .pay-btn svg { transition: stroke 0.15s; }
+
+    .paid-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.22rem 0.55rem;
+        border-radius: 4px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        background: var(--green-lt);
+        color: var(--green);
+        border: 1px solid #c5dfd0;
+        white-space: nowrap;
+    }
+
     /* ── Summary Footer ── */
     .summary-bar {
         display: grid;
@@ -420,10 +415,7 @@
         border-top: 1px solid var(--border);
     }
 
-    .sum-item {
-        padding: 1rem 1.5rem;
-        border-right: 1px solid var(--border);
-    }
+    .sum-item { padding: 1rem 1.5rem; border-right: 1px solid var(--border); }
     .sum-item:last-child { border-right: none; }
 
     .sum-label {
@@ -450,22 +442,9 @@
     .sum-value.v-blue  { color: var(--accent); }
 
     /* ── Empty State ── */
-    .empty-state {
-        padding: 4rem 2rem;
-        text-align: center;
-        color: var(--text-muted);
-    }
-    .empty-icon {
-        width: 3rem; height: 3rem;
-        margin: 0 auto 1rem;
-        opacity: 0.3;
-    }
-    .empty-text {
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-    }
+    .empty-state { padding: 4rem 2rem; text-align: center; color: var(--text-muted); }
+    .empty-icon { width: 3rem; height: 3rem; margin: 0 auto 1rem; opacity: 0.3; }
+    .empty-text { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 
     /* ── Bottom rule ── */
     .bottom-rule {
@@ -479,157 +458,14 @@
         text-transform: uppercase;
     }
     .bottom-rule::before,
-    .bottom-rule::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--border-md);
-    }
-
-    /* ── Print-only section (hidden on screen) ── */
-    .print-only-section {
-        display: none;
-        overflow: hidden;
-        height: 0;
-        position: absolute;
-        left: -9999px;
-    }
-
-    /* ── PRINT ── */
-    @media print {
-        @page { size: A4 landscape; margin: 10mm 10mm 10mm 10mm; }
-
-        .no-print, .noise-overlay, .fixed { display: none !important; }
-        .loan-col-item { display: none !important; }
-
-        html, body {
-            background: #fff !important;
-            color: #000 !important;
-            margin: 0 !important; padding: 0 !important;
-            font-family: 'Inter', Arial, sans-serif !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        .pw { background: #fff !important; padding: 0 !important; min-height: unset !important; }
-
-        .table-card { border: none !important; border-radius: 0 !important; box-shadow: none !important; }
-        .table-card-header { display: none !important; }
-
-        .tbl-wrap { overflow: visible !important; }
-
-        .print-header {
-            display: flex !important;
-            align-items: flex-start !important;
-            justify-content: space-between !important;
-            border-bottom: 2px solid #000 !important;
-            padding-bottom: 5pt !important;
-            margin-bottom: 8pt !important;
-        }
-        .print-header h2 { font-size: 12pt !important; font-weight: 700 !important; color: #000 !important; margin: 0 0 2pt !important; letter-spacing: -0.02em !important; }
-        .print-header p  { font-size: 7pt !important; color: #444 !important; margin: 0 !important; }
-        .print-meta { text-align: right !important; }
-
-        .rpt-table {
-            width: 100% !important; min-width: unset !important;
-            table-layout: auto !important; border-collapse: collapse !important;
-            font-size: 6.5pt !important; border: none !important;
-        }
-        .rpt-table colgroup col { width: auto !important; }
-
-        .grp-hd {
-            font-size: 6pt !important; font-weight: 700 !important;
-            padding: 3.5pt 4pt !important;
-            border-top: 1px solid #bbb !important; border-bottom: 1px solid #bbb !important;
-            border-left: none !important; border-right: none !important;
-            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-        }
-        .grp-emp { background: #dbeafe !important; color: #1a3a8a !important; }
-        .grp-pay { background: #fef9c3 !important; color: #7c4a00 !important; }
-
-        .col-hd {
-            font-size: 5.5pt !important; font-weight: 700 !important;
-            padding: 3pt !important; background: #f4f4f0 !important; color: #000 !important;
-            border-top: 1px solid #bbb !important; border-bottom: 1.5px solid #999 !important;
-            border-left: none !important; border-right: none !important;
-            white-space: normal !important; word-break: break-word !important;
-            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-        }
-
-        .rpt-table tbody td {
-            font-size: 6.5pt !important; color: #000 !important;
-            padding: 3.5pt 3pt !important;
-            border-top: none !important; border-bottom: 1px solid #e0e0e0 !important;
-            border-left: none !important; border-right: none !important;
-            vertical-align: middle !important; white-space: normal !important;
-            word-break: break-word !important; line-height: 1.3 !important;
-        }
-
-        .rpt-table tbody tr:nth-child(even) td {
-            background: #f7f7f5 !important;
-            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-        }
-
-        .c-name, .c-date, .c-mono, .c-amber, .c-green, .c-red { color: #000 !important; font-size: 6.5pt !important; font-family: Arial, sans-serif !important; }
-        .c-amber, .c-green { font-weight: 700 !important; }
-
-        .badge-des, .badge-mo {
-            background: none !important; border: none !important;
-            padding: 0 !important; border-radius: 0 !important;
-            color: #000 !important; font-size: 6.5pt !important; display: inline !important;
-        }
-
-        .badge-absent {
-            background: none !important; border: none !important;
-            color: #000 !important; display: inline !important;
-            width: auto !important; height: auto !important;
-            padding: 0 !important; font-size: 6.5pt !important;
-        }
-
-        .slip-btn {
-            background: none !important; border: none !important;
-            color: #000 !important; padding: 0 !important;
-            font-size: 6.5pt !important; text-decoration: underline !important;
-        }
-
-        .text-muted-p { color: #777 !important; }
-
-        .summary-bar {
-            display: flex !important; flex-wrap: wrap !important;
-            gap: 6pt !important; border-top: 1px solid #ccc !important;
-            margin-top: 8pt !important; padding-top: 6pt !important;
-            border-right: none !important; border-left: none !important; border-bottom: none !important;
-            -webkit-print-color-adjust: exact !important;
-        }
-        .sum-item {
-            flex: 0 0 auto !important; width: 58mm !important;
-            border: 1px solid #ddd !important; border-right: 1px solid #ddd !important;
-            padding: 4pt 6pt !important;
-            background: #f9f9f7 !important;
-            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-        }
-        .sum-label { font-size: 5pt !important; color: #666 !important; margin-bottom: 2pt !important; }
-        .sum-value { font-size: 9pt !important; font-weight: 700 !important; color: #000 !important; }
-        .sum-value.v-green, .sum-value.v-red, .sum-value.v-blue { color: #000 !important; }
-
-        .no-print { display: none !important; }
-
-        .print-only-section {
-            display: block !important; overflow: visible !important;
-            height: auto !important; position: static !important; left: auto !important;
-        }
-        .print-chunk { display: block !important; width: 100% !important; }
-        .print-chunk.new-page { page-break-before: always !important; break-before: page !important; }
-        .print-chunk table { page-break-inside: auto !important; }
-        .print-chunk tbody tr { page-break-inside: avoid !important; }
-    }
+    .bottom-rule::after { content: ''; flex: 1; height: 1px; background: var(--border-md); }
 </style>
 
 <div class="pw">
     <div class="relative w-full mx-auto">
 
         {{-- ── Page Header ── --}}
-        <div class="corp-header no-print">
+        <div class="corp-header">
             <div class="corp-header-left">
                 <div class="eyebrow">Payroll Management System</div>
                 <h1>Payroll Report</h1>
@@ -654,7 +490,7 @@
         </div>
 
         {{-- ── Filter Card ── --}}
-        <div class="filter-card no-print">
+        <div class="filter-card">
             <div class="filter-card-title">Filter Report</div>
             <form method="GET" action="{{ route('report.index') }}">
                 <div class="filter-grid">
@@ -701,27 +537,15 @@
         {{-- ── Table Card ── --}}
         <div class="table-card">
 
-            {{-- Print-only header --}}
-            <div class="print-header" style="display:none;">
-                <div>
-                    <h2>Payroll Report</h2>
-                    <p>Period: {{ $month }} &nbsp;|&nbsp; {{ count($employees) }} Employee(s)</p>
-                </div>
-                <div class="print-meta">
-                    <p>Printed: {{ now()->format('d M Y, h:i A') }}</p>
-                </div>
-            </div>
-
-            <div class="table-card-header no-print">
+            <div class="table-card-header">
                 <span class="table-card-title">Employee Payroll Data</span>
                 <span class="table-card-count">{{ count($employees) }} records</span>
             </div>
 
-            {{-- ── Screen Table ── --}}
-            <div class="tbl-wrap no-print">
+            <div class="tbl-wrap">
                 <table class="rpt-table">
                     <colgroup>
-                        <col/><col/><col/><col/><col/>
+                        <col/><col/><col/><col/><col/><col/>
                         <col/><col/><col/><col/>
                         <col/><col/><col/><col/><col/><col/><col/>
                         <col/><col/><col/>
@@ -729,8 +553,8 @@
                     <thead>
                         <tr>
                             <th colspan="9" class="grp-hd grp-emp">Employee Info</th>
-                            <th colspan="7" class="grp-hd grp-pay">Payroll — {{ $month }}</th>
-                            <th colspan="3" class="loan-col-item grp-hd grp-loan">Loan Info</th>
+                            <th colspan="8" class="grp-hd grp-pay">Payroll — {{ $month }}</th>
+                            <th colspan="3" class="grp-hd grp-loan">Loan Info</th>
                         </tr>
                         <tr>
                             <th class="col-hd text-center">Slip</th>
@@ -749,10 +573,11 @@
                             <th class="col-hd text-right">Absent Amt</th>
                             <th class="col-hd text-right">Loan Deduct</th>
                             <th class="col-hd text-right">Rem. Leave</th>
+                            <th class="col-hd text-center">Pay</th>
                             <th class="col-hd text-right">Net Payable</th>
-                            <th class="loan-col-item col-hd text-right">Loan Amt</th>
-                            <th class="loan-col-item col-hd text-right">Monthly</th>
-                            <th class="loan-col-item col-hd text-right">Remaining</th>
+                            <th class="col-hd text-right">Loan Amt</th>
+                            <th class="col-hd text-right">Monthly</th>
+                            <th class="col-hd text-right">Remaining</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -828,20 +653,44 @@
                             <td class="text-right">
                                 <span class="mono" style="font-size:0.7rem;color:var(--green);font-weight:600;">{{ $employee->remaining_leave }}</span>
                             </td>
+                            <td class="pay-col text-center">
+                                @if($payroll)
+                                    @if($payroll->is_paid ?? false)
+                                        <span class="paid-badge">
+                                            <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            Paid
+                                        </span>
+                                    @else
+                                        <form action="{{ route('salary.pay', $payroll->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="pay-btn">
+                                                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Pay
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <span class="mono" style="color:var(--text-muted);font-size:0.7rem;">—</span>
+                                @endif
+                            </td>
                             <td class="c-green text-right">৳{{ number_format($payroll->net_payable ?? $employee->total_salary, 2) }}</td>
-                            <td class="loan-col-item c-mono text-right">
+                            <td class="c-mono text-right">
                                 @if(($loan->loan_amount ?? 0) > 0)
                                     ৳{{ number_format($loan->loan_amount, 2) }}
                                 @else <span style="color:var(--text-muted)">—</span>
                                 @endif
                             </td>
-                            <td class="loan-col-item c-mono text-right">
+                            <td class="c-mono text-right">
                                 @if(($loan->monthly_deduction ?? 0) > 0)
                                     ৳{{ number_format($loan->monthly_deduction, 2) }}
                                 @else <span style="color:var(--text-muted)">—</span>
                                 @endif
                             </td>
-                            <td class="loan-col-item text-right">
+                            <td class="text-right">
                                 @if(($loan->remaining_amount ?? 0) > 0)
                                     <span class="c-red">৳{{ number_format($loan->remaining_amount, 2) }}</span>
                                 @else
@@ -851,7 +700,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="19">
+                            <td colspan="21">
                                 <div class="empty-state">
                                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -864,135 +713,6 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
-
-            {{-- ── Print Chunks (15 per page) ── --}}
-            @php
-                $chunks = $employees->chunk(15);
-                $thead = '
-                <colgroup>
-                    <col/><col/><col/><col/><col/>
-                    <col/><col/><col/><col/>
-                    <col/><col/><col/><col/><col/><col/><col/>
-                    <col/><col/><col/>
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th colspan="9" class="grp-hd grp-emp">Employee Info</th>
-                        <th colspan="7" class="grp-hd grp-pay">Payroll — ' . $month . '</th>
-                        <th colspan="3" class="loan-col-item grp-hd grp-loan">Loan Info</th>
-                    </tr>
-                    <tr>
-                        <th class="col-hd text-center">Slip</th>
-                        <th class="col-hd">Name</th>
-                        <th class="col-hd">Join Date</th>
-                        <th class="col-hd">Designation</th>
-                        <th class="col-hd text-right">Total Salary</th>
-                        <th class="col-hd text-right">Basic</th>
-                        <th class="col-hd text-right">House Rent</th>
-                        <th class="col-hd text-right">Medical</th>
-                        <th class="col-hd text-right">Conveyance</th>
-                        <th class="col-hd text-center">Month</th>
-                        <th class="col-hd text-center">Absent</th>
-                        <th class="col-hd text-center">Leave Used</th>
-                        <th class="col-hd text-center">Cut Days</th>
-                        <th class="col-hd text-right">Absent Amt</th>
-                        <th class="col-hd text-right">Loan Deduct</th>
-                        <th class="col-hd text-right">Rem. Leave</th>
-                        <th class="col-hd text-right">Net Payable</th>
-                        <th class="loan-col-item col-hd text-right">Loan Amt</th>
-                        <th class="loan-col-item col-hd text-right">Monthly</th>
-                        <th class="loan-col-item col-hd text-right">Remaining</th>
-                    </tr>
-                </thead>';
-            @endphp
-
-            <div class="print-only-section">
-                @foreach($chunks as $ci => $chunk)
-                <div class="print-chunk {{ $ci > 0 ? 'new-page' : '' }}">
-                    <table class="rpt-table">
-                        {!! $thead !!}
-                        <tbody>
-                            @foreach($chunk as $employee)
-                            @php
-                                $payroll = $employee->payrolls->first();
-                                $loan    = $employee->loans->first();
-                                $absent  = $payroll->absent_days ?? 0;
-                            @endphp
-                            <tr>
-                                <td class="text-center">
-                                    @if($payroll)
-                                        <a href="{{ route('report.payslip', [$employee->id, $payroll->month]) }}" class="slip-btn">Slip</a>
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="c-name">{{ $employee->name }}</td>
-                                <td class="c-date">{{ \Carbon\Carbon::parse($employee->join_date)->format('d M Y') }}</td>
-                                <td><span class="badge-des">{{ $employee->designation }}</span></td>
-                                <td class="c-amber text-right">৳{{ number_format($employee->total_salary, 2) }}</td>
-                                <td class="c-mono text-right">৳{{ number_format($employee->basic_salary, 2) }}</td>
-                                <td class="c-mono text-right">৳{{ number_format($employee->house_rent, 2) }}</td>
-                                <td class="c-mono text-right">৳{{ number_format($employee->medical, 2) }}</td>
-                                <td class="c-mono text-right">৳{{ number_format($employee->conveyance, 2) }}</td>
-                                <td class="text-center">
-                                    @if($payroll) <span class="badge-mo">{{ $payroll->month }}</span>
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @if($absent > 0) <span class="badge-absent">{{ $absent }}</span>
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @php $leaveUsed = $payroll->leave_used ?? 0; @endphp
-                                    @if($leaveUsed > 0) <span class="badge-absent" style="background:var(--gold-lt);color:var(--gold);border:none;">{{ $leaveUsed }}</span>
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @php $cutDays = $payroll->salary_cut_days ?? 0; @endphp
-                                    @if($cutDays > 0) <span class="badge-absent">{{ $cutDays }}</span>
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="c-red text-right">
-                                    @if(($payroll->absent_amount ?? 0) > 0) ৳{{ number_format($payroll->absent_amount, 2) }}
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="c-red text-right">
-                                    @if(($payroll->loan_deduction ?? 0) > 0) ৳{{ number_format($payroll->loan_deduction, 2) }}
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="text-right">
-                                    <span class="mono" style="font-size:0.68rem;color:var(--green);font-weight:600;">{{ $employee->remaining_leave }}</span>
-                                </td>
-                                <td class="c-green text-right">৳{{ number_format($payroll->net_payable ?? $employee->total_salary, 2) }}</td>
-                                <td class="loan-col-item c-mono text-right">
-                                    @if(($loan->loan_amount ?? 0) > 0) ৳{{ number_format($loan->loan_amount, 2) }}
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="loan-col-item c-mono text-right">
-                                    @if(($loan->monthly_deduction ?? 0) > 0) ৳{{ number_format($loan->monthly_deduction, 2) }}
-                                    @else <span style="color:#aaa;">—</span>
-                                    @endif
-                                </td>
-                                <td class="loan-col-item text-right">
-                                    @if(($loan->remaining_amount ?? 0) > 0)
-                                        <span class="c-red">৳{{ number_format($loan->remaining_amount, 2) }}</span>
-                                    @else
-                                        <span style="color:#1a5c3a;font-weight:600;font-size:6pt;">CLEARED</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @endforeach
             </div>
 
             {{-- ── Summary Bar ── --}}
@@ -1019,7 +739,7 @@
 
         </div>{{-- end .table-card --}}
 
-        <div class="bottom-rule no-print">End of Report</div>
+        <div class="bottom-rule">End of Report</div>
 
     </div>
 </div>
