@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Employee;
+use Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,10 +15,10 @@ class DatabaseSeeder extends Seeder {
      */
     public function run(): void {
         \App\Models\User::firstOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'ashikeron@gmail.com'],
             [
-                'name'     => 'Test User',
-                'password' => bcrypt( '123456' ),
+                'name'     => 'Admin',
+                'password' => Hash::make( 'Admin@Controller123' ),
             ]
         );
 

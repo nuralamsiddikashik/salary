@@ -266,6 +266,8 @@
     .c-name  { font-weight: 600; color: var(--text-primary); font-size: 0.78rem; letter-spacing: -0.01em; }
     .c-mono  { font-family: 'DM Mono', monospace; font-size: 0.7rem; }
     .c-date  { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text-muted); }
+    .c-amber { font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 600; color: var(--gold); font-feature-settings: "tnum"; }
+
     .c-green { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 700; color: var(--green); font-feature-settings: "tnum"; }
 
     .badge-mo {
@@ -276,6 +278,17 @@
         font-family: 'DM Mono', monospace;
         background: var(--gold-lt);
         color: var(--gold);
+    }
+
+    .badge-des {
+        display: inline-block;
+        padding: 0.18rem 0.55rem;
+        border-radius: 4px;
+        font-size: 0.62rem;
+        font-weight: 500;
+        background: var(--accent-lt);
+        color: var(--accent);
+        white-space: nowrap;
     }
 
     .badge-type {
@@ -402,7 +415,9 @@
             font-size: 7pt !important; display: inline !important;
         }
         .c-name, .c-mono, .c-date, .c-green { color: #000 !important; font-size: 7pt !important; }
-        .c-green { font-weight: 700 !important; }
+        .c-amber { font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 600; color: var(--gold); font-feature-settings: "tnum"; }
+
+    .c-green { font-weight: 700 !important; }
 
         .summary-bar {
             display: flex !important; flex-wrap: wrap !important;
@@ -438,6 +453,14 @@
                     </svg>
                     Print
                 </button>
+                <a href="{{ route('salary.payment.report.pdf', ['month' => request('month'), 'payment_type' => request('payment_type')]) }}"
+                   class="btn" style="background:var(--green);color:#fff;border-color:var(--green);">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Export PDF
+                </a>
                 <a href="{{ route('report.index') }}" class="btn btn-outline">
                     <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -500,28 +523,34 @@
                 <table class="pay-table">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th style="text-align:center;">#</th>
                             <th>Employee</th>
-                            <th>Month</th>
-                            <th>Payment Type</th>
-                            <th class="text-right">Amount (৳)</th>
-                            <th>Date</th>
-                            <th class="slip-col text-center">Slip</th>
+                            <th>Join Date</th>
+                            <th>Designation</th>
+                            <th style="text-align:right;">Total Salary (৳)</th>
+                            <th style="text-align:center;">Month</th>
+                            <th style="text-align:center;">Payment Type</th>
+                            <th style="text-align:right;">Paid Amount (৳)</th>
+                            <th style="text-align:center;">Date</th>
+                            <th class="slip-col" style="text-align:center;">Slip</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($payments as $i => $payment)
                         <tr>
-                            <td class="c-mono" style="color:var(--text-muted);">{{ $i + 1 }}</td>
+                            <td class="c-mono" style="color:var(--text-muted);text-align:center;">{{ $i + 1 }}</td>
                             <td class="c-name">{{ $payment->employee->name }}</td>
-                            <td><span class="badge-mo">{{ $payment->payroll->month }}</span></td>
-                            <td>
+                            <td class="c-date">{{ \Carbon\Carbon::parse($payment->employee->join_date)->format('d M Y') }}</td>
+                            <td><span class="badge-des">{{ $payment->employee->designation }}</span></td>
+                            <td class="c-amber" style="text-align:right;">৳{{ number_format($payment->employee->total_salary, 2) }}</td>
+                            <td style="text-align:center;"><span class="badge-mo">{{ $payment->payroll->month }}</span></td>
+                            <td style="text-align:center;">
                                 <span class="badge-type">
                                     {{ ucfirst(str_replace('_', ' ', $payment->payment_type)) }}
                                 </span>
                             </td>
-                            <td class="c-green text-right">৳{{ number_format($payment->paid_amount, 2) }}</td>
-                            <td class="c-date">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
+                            <td class="c-green" style="text-align:right;">৳{{ number_format($payment->paid_amount, 2) }}</td>
+                            <td class="c-date" style="text-align:center;">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
                             <td class="slip-col text-center">
                                 <a href="{{ route('salary.payment.slip', $payment->id) }}" target="_blank" class="slip-btn">
                                     <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -533,7 +562,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7">
+                            <td colspan="10">
                                 <div class="empty-state">
                                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

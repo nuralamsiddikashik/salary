@@ -310,11 +310,12 @@
 
         /* ── Print ── */
         @media print {
-            @page { margin: 12mm 15mm; size: A4; }
+            @page { margin: 4mm 8mm; size: A4; }
 
             body {
                 background: #fff !important;
                 padding: 0 !important;
+                margin: 0 !important;
                 display: block !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
@@ -331,12 +332,12 @@
             }
 
             .slip-header {
-                padding: 1.2rem 1.5rem !important;
+                padding: 0.7rem 1.2rem !important;
                 border-bottom: 2px solid #1a1a18 !important;
             }
 
             .emp-row { -webkit-print-color-adjust: exact !important; }
-            .emp-cell { padding: 0.7rem 1rem !important; }
+            .emp-cell { padding: 0.5rem 0.9rem !important; }
             .ec-label { font-size: 0.52rem !important; color: #9a9a92 !important; }
             .ec-val { font-size: 0.78rem !important; }
 
@@ -345,7 +346,7 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 font-size: 0.52rem !important;
-                padding: 0.4rem 1rem !important;
+                padding: 0.3rem 0.9rem !important;
             }
 
             .detail-table thead tr {
@@ -353,7 +354,7 @@
                 -webkit-print-color-adjust: exact !important;
             }
             .detail-table thead th { font-size: 0.56rem !important; padding: 0.45rem 1rem !important; }
-            .detail-table tbody td { padding: 0.6rem 1rem !important; }
+            .detail-table tbody td { padding: 0.45rem 0.9rem !important; }
             .item-name { font-size: 0.75rem !important; }
             .item-note { font-size: 0.65rem !important; }
             .item-amount { font-size: 0.74rem !important; }
@@ -362,7 +363,7 @@
             .net-row {
                 background: #1a3a5c !important;
                 border-top: 2px solid #1a1a18 !important;
-                padding: 0.85rem 1rem !important;
+                padding: 0.65rem 0.9rem !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
@@ -375,7 +376,7 @@
                 background: #fafaf8 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                padding: 1rem 1rem 0.75rem !important;
+                padding: 0.75rem 0.9rem 0.6rem !important;
             }
             .sig-line { border-top: 1px solid #9a9a92 !important; }
             .sig-label { font-size: 0.52rem !important; color: #9a9a92 !important; }
