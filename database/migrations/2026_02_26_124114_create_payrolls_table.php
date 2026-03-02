@@ -8,6 +8,25 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
+    // public function up(): void {
+    //     Schema::create( 'payrolls', function ( Blueprint $table ) {
+    //         $table->id();
+    //         $table->foreignId( 'employee_id' )->constrained()->onDelete( 'cascade' );
+
+    //         $table->string( 'month' );
+    //         $table->integer( 'absent_days' )->default( 0 );
+    //         $table->decimal( 'absent_amount', 12, 2 )->default( 0 );
+    //         $table->foreignId( 'loan_id' )->nullable()->constrained( 'loans' )->nullOnDelete();
+    //         $table->decimal( 'loan_deduction', 12, 2 )->default( 0 );
+    //         $table->decimal( 'net_payable', 12, 2 );
+
+    //         $table->integer( 'leave_used' )->default( 0 );
+    //         $table->integer( 'salary_cut_days' )->default( 0 );
+
+    //         $table->timestamps();
+    //     } );
+    // }
+
     public function up(): void {
         Schema::create( 'payrolls', function ( Blueprint $table ) {
             $table->id();
@@ -16,9 +35,9 @@ return new class extends Migration {
             $table->string( 'month' );
             $table->integer( 'absent_days' )->default( 0 );
             $table->decimal( 'absent_amount', 12, 2 )->default( 0 );
+            $table->foreignId( 'loan_id' )->nullable()->constrained( 'loans' )->nullOnDelete();
             $table->decimal( 'loan_deduction', 12, 2 )->default( 0 );
             $table->decimal( 'net_payable', 12, 2 );
-
             $table->integer( 'leave_used' )->default( 0 );
             $table->integer( 'salary_cut_days' )->default( 0 );
 

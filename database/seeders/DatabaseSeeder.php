@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        Employee::factory( 50 )->create();
+        Employee::factory( 5 )->create();
     }
 }

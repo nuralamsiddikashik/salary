@@ -566,8 +566,6 @@
                             $payroll = $employee->payrolls->first();
                             $loan    = $employee->loans->first();
                             $absent  = $payroll->absent_days ?? 0;
-                            $hasLoanInPayroll = $payroll && ($payroll->loan_deduction ?? 0) > 0;
-                            $hasActiveLoan = $loan && ($loan->remaining_amount ?? 0) > 0;
                         @endphp
                         <tr>
                             <td class="text-center">
@@ -636,33 +634,28 @@
                                 <span class="mono" style="font-size:0.7rem;color:var(--green);font-weight:600;">{{ $employee->remaining_leave }}</span>
                             </td>
                             <td class="c-green text-right">৳{{ number_format($payroll->net_payable ?? $employee->total_salary, 2) }}</td>
-                            
                             <td class="c-mono text-right">
-                                @if($hasLoanInPayroll || $hasActiveLoan)
-                                    ৳{{ number_format($loan->loan_amount ?? 0, 2) }}
+                                @if(($loan->loan_amount ?? 0) > 0)
+                                    ৳{{ number_format($loan->loan_amount, 2) }}
                                 @else <span style="color:var(--text-muted)">—</span>
                                 @endif
                             </td>
                             <td class="c-mono text-right">
-                                @if($hasLoanInPayroll)
-                                    ৳{{ number_format($payroll->loan_deduction, 2) }}
-                                @elseif($hasActiveLoan)
+                                @if(($loan->monthly_deduction ?? 0) > 0)
                                     ৳{{ number_format($loan->monthly_deduction, 2) }}
                                 @else <span style="color:var(--text-muted)">—</span>
                                 @endif
                             </td>
                             <td class="text-right">
-                                @if($hasLoanInPayroll || $hasActiveLoan)
-                                    <span class="c-red">৳{{ number_format($loan->remaining_amount ?? 0, 2) }}</span>
+                                @if(($loan->remaining_amount ?? 0) > 0)
+                                    <span class="c-red">৳{{ number_format($loan->remaining_amount, 2) }}</span>
                                 @else
                                     <span class="mono" style="color:var(--green);font-size:0.65rem;font-weight:600;">CLEARED</span>
                                 @endif
                             </td>
-
                             <td class="text-center">
                                 <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
                                     @if($payroll)
-                                        {{-- 🔹 পেমেন্ট লজিক আপডেট --}}
                                         @if($payroll->status === 'paid_full')
                                             <span class="paid-badge">
                                                 <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -670,22 +663,11 @@
                                                 </svg>
                                                 Paid
                                             </span>
-                                        @elseif($payroll->status === 'paid_partial')
-                                            {{-- হাফ পেমেন্ট করার পর এই বাটন আসবে --}}
-                                            <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="pay-btn" style="background: var(--gold-lt); color: var(--gold); border-color: #e8d8a0;" onclick="this.disabled=true; this.form.submit();">Pay Final</button>
-                                            </form>
                                         @else
-                                            {{-- পেন্ডিং থাকলে এই বাটন আসবে --}}
                                             <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="pay-btn" onclick="this.disabled=true; this.form.submit();">Pay</button>
                                             </form>
-                                        @endif
-
-                                        {{-- শুধুমাত্র ফুললি পেইড না হওয়া পর্যন্ত ডিলিট বাটন থাকবে --}}
-                                        @if($payroll->status !== 'paid_full')
                                             <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -741,3 +723,4 @@
 </div>
 
 @endsection
+

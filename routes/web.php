@@ -22,6 +22,7 @@ Route::controller( EmployeeController::class )->prefix( 'employees' )->group( fu
 Route::controller( PayrollController::class )->prefix( 'payroll' )->group( function () {
     Route::get( '/generate', 'create' )->name( 'payroll.create' );
     Route::post( '/generate', 'generate' )->name( 'payroll.generate' );
+    Route::delete( '/payroll/{id}', 'destroy' )->name( 'payroll.destroy' );
 } );
 
 Route::controller( LoanController::class )->prefix( 'loans' )->group( function () {

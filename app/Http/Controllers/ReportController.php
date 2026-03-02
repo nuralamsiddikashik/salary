@@ -7,7 +7,6 @@ use App\Models\Payroll;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Validation\ValidationException;
 
 class ReportController extends Controller {
 
@@ -29,31 +28,48 @@ class ReportController extends Controller {
     //         ->get();
     // }
 
-    private function getEmployees( Request $request, string $month ) {
-        // ✅ Strict month validation (format: YYYY-MM)
-        try {
-            $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )
-                ->format( 'Y-m' );
-        } catch ( \Exception $e ) {
-            throw ValidationException::withMessages( [
-                'month' => 'Invalid month format. Expected format: YYYY-MM',
-            ] );
-        }
+    // private function getEmployees( Request $request, string $month ) {
+    //     // ✅ Strict month validation (format: YYYY-MM)
+    //     try {
+    //         $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )
+    //             ->format( 'Y-m' );
+    //     } catch ( \Exception $e ) {
+    //         throw ValidationException::withMessages( [
+    //             'month' => 'Invalid month format. Expected format: YYYY-MM',
+    //         ] );
+    //     }
 
-        // ✅ Safe integer casting (prevents invalid input)
+    //     // ✅ Safe integer casting (prevents invalid input)
+    //     $employeeId = $request->integer( 'employee_id' );
+
+    //     return Employee::query()
+    //         ->when( $employeeId, function ( $query ) use ( $employeeId ) {
+    //             $query->where( 'id', $employeeId );
+    //         } )
+    //         ->whereHas( 'payrolls', function ( $query ) use ( $formattedMonth ) {
+    //             $query->where( 'month', $formattedMonth );
+    //         } )
+    //         ->with( [
+    //             'payrolls' => function ( $query ) use ( $formattedMonth ) {
+    //                 $query->where( 'month', $formattedMonth );
+    //             },
+    //         ] )
+    //         ->orderBy( 'name' )
+    //         ->get();
+    // }
+
+    private function getEmployees( Request $request, string $month ) {
+        $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )->format( 'Y-m' );
+
         $employeeId = $request->integer( 'employee_id' );
 
         return Employee::query()
-            ->when( $employeeId, function ( $query ) use ( $employeeId ) {
-                $query->where( 'id', $employeeId );
-            } )
-            ->whereHas( 'payrolls', function ( $query ) use ( $formattedMonth ) {
-                $query->where( 'month', $formattedMonth );
-            } )
-            ->with( [
-                'payrolls' => function ( $query ) use ( $formattedMonth ) {
-                    $query->where( 'month', $formattedMonth );
-                },
+            ->when( $employeeId, fn( $q ) => $q->where( 'id', $employeeId ) )
+            ->whereHas( 'payrolls', fn( $q ) =>
+                $q->where( 'month', $formattedMonth )
+            )
+            ->with( ['payrolls' => fn( $q ) =>
+                $q->where( 'month', $formattedMonth ),
             ] )
             ->orderBy( 'name' )
             ->get();
