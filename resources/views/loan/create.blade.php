@@ -139,6 +139,12 @@
     .field input:focus,
     .field select:focus { border-color: var(--accent); background: var(--surface); }
     .field input::placeholder { color: var(--text-muted); font-size: 0.82rem; }
+    .field input[readonly] {
+        background: #f0ede8;
+        color: var(--text-muted);
+        cursor: not-allowed;
+        border-color: var(--border);
+    }
 
     .field select {
         appearance: none;
@@ -165,7 +171,21 @@
     }
     .input-wrap input { padding-left: 1.85rem; }
 
-    /* Preview box */
+    /* ── Existing loan warning note ── */
+    .loan-note {
+        display: none;
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: var(--gold);
+        background: var(--gold-lt);
+        border: 1px solid #e8d8a0;
+        border-radius: 5px;
+        padding: 0.4rem 0.7rem;
+        font-family: 'DM Mono', monospace;
+        letter-spacing: 0.02em;
+    }
+
+    /* ── Preview box ── */
     .preview-box {
         background: var(--bg);
         border: 1px solid var(--border);
@@ -219,11 +239,21 @@
         flex-shrink: 0;
     }
 
-    .preview-divider {
-        width: 1px;
-        height: 2rem;
-        background: var(--border-md);
-        flex-shrink: 0;
+    /* ── Current remaining strip ── */
+    .remaining-strip {
+        display: none;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.68rem;
+        font-family: 'DM Mono', monospace;
+        color: var(--accent);
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .remaining-strip strong {
+        font-weight: 700;
+        font-size: 0.78rem;
     }
 
     .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
@@ -314,7 +344,17 @@
                             <select name="employee_id" id="employee_id" required>
                                 <option value="" disabled selected>Select an employee...</option>
                                 @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                    @php
+                                        $activeLoan = $employee->loans
+                                            ->where('remaining_amount', '>', 0)
+                                            ->first();
+                                    @endphp
+                                    <option value="{{ $employee->id }}"
+                                            data-has-loan="{{ $activeLoan ? '1' : '0' }}"
+                                            data-monthly="{{ $activeLoan->monthly_deduction ?? 0 }}"
+                                            data-remaining="{{ $activeLoan->remaining_amount ?? 0 }}">
+                                        {{ $employee->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -343,6 +383,9 @@
                                 <input type="number" name="monthly_deduction" id="monthly_deduction"
                                        placeholder="0.00" min="0" step="0.01" required>
                             </div>
+                            <div class="loan-note" id="existingLoanNote">
+                                ⚠ Employee already has an active loan. Monthly deduction cannot be changed.
+                            </div>
                         </div>
 
                     </div>
@@ -365,6 +408,15 @@
                                 <div class="preview-item-label">Duration</div>
                                 <div class="preview-item-value v-green" id="preview-months">— mo</div>
                             </div>
+                        </div>
+
+                        {{-- Existing remaining balance strip --}}
+                        <div class="remaining-strip" id="existingRemaining">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Current Remaining Balance: <strong id="remainingValue">&#2547;0.00</strong>
                         </div>
                     </div>
 
@@ -396,11 +448,15 @@
 </div>
 
 <script>
-    const loanInput    = document.getElementById('loan_amount');
-    const monthlyInput = document.getElementById('monthly_deduction');
+    const employeeSelect = document.getElementById('employee_id');
+    const loanInput      = document.getElementById('loan_amount');
+    const monthlyInput   = document.getElementById('monthly_deduction');
     const previewTotal   = document.getElementById('preview-total');
     const previewMonthly = document.getElementById('preview-monthly');
     const previewMonths  = document.getElementById('preview-months');
+    const note           = document.getElementById('existingLoanNote');
+    const remainingBox   = document.getElementById('existingRemaining');
+    const remainingValue = document.getElementById('remainingValue');
 
     function fmt(val) {
         return '\u09F3' + parseFloat(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
@@ -412,13 +468,34 @@
 
         previewTotal.textContent   = fmt(loan);
         previewMonthly.textContent = fmt(monthly);
-
-        if (monthly > 0 && loan > 0) {
-            previewMonths.textContent = Math.ceil(loan / monthly) + ' mo';
-        } else {
-            previewMonths.textContent = '— mo';
-        }
+        previewMonths.textContent  = (monthly > 0 && loan > 0)
+            ? Math.ceil(loan / monthly) + ' mo'
+            : '— mo';
     }
+
+    employeeSelect.addEventListener('change', function () {
+        const selected  = this.options[this.selectedIndex];
+        const hasLoan   = selected.getAttribute('data-has-loan');
+        const monthly   = selected.getAttribute('data-monthly');
+        const remaining = selected.getAttribute('data-remaining');
+
+        if (hasLoan === '1') {
+            monthlyInput.value    = monthly;
+            monthlyInput.readOnly = true;
+            monthlyInput.required = false;
+            note.style.display    = 'block';
+            remainingBox.style.display = 'flex';
+            remainingValue.textContent = fmt(remaining);
+        } else {
+            monthlyInput.value    = '';
+            monthlyInput.readOnly = false;
+            monthlyInput.required = true;
+            note.style.display    = 'none';
+            remainingBox.style.display = 'none';
+        }
+
+        updatePreview();
+    });
 
     loanInput.addEventListener('input', updatePreview);
     monthlyInput.addEventListener('input', updatePreview);
