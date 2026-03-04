@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LoanController extends Controller {
-    // Show Loan Create Form
+
+    public function index() {
+
+    }
     public function create() {
         $employees = Employee::all();
         return view( 'loan.create', compact( 'employees' ) );
