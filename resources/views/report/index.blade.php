@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-    /* আপনার দেওয়া সমস্ত সিএসএস স্টাইল এখানে অপরিবর্তিত থাকবে */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
     :root {
@@ -346,6 +345,7 @@
     }
     .slip-btn:hover { background: var(--green); color: #fff; }
 
+    /* Pay First Half — navy */
     .pay-btn {
         display: inline-flex;
         align-items: center;
@@ -364,6 +364,26 @@
     }
     .pay-btn:hover { background: var(--accent); color: #fff; }
 
+    /* Pay Final Half — gold */
+    .pay-btn-partial {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        background: var(--gold-lt);
+        color: var(--gold);
+        border: 1px solid #e8d8a0;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.15s;
+        white-space: nowrap;
+    }
+    .pay-btn-partial:hover { background: var(--gold); color: #fff; }
+
+    /* Full paid — green */
     .paid-badge {
         display: inline-flex;
         align-items: center;
@@ -378,6 +398,22 @@
         white-space: nowrap;
     }
 
+    /* Half done — gold */
+    .half-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.22rem 0.55rem;
+        border-radius: 4px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        background: var(--gold-lt);
+        color: var(--gold);
+        border: 1px solid #e8d8a0;
+        white-space: nowrap;
+    }
+
+    /* Delete — red */
     .del-btn {
         display: inline-flex;
         align-items: center;
@@ -395,6 +431,13 @@
         white-space: nowrap;
     }
     .del-btn:hover { background: var(--red); color: #fff; }
+
+    .action-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+    }
 
     .summary-bar {
         display: grid;
@@ -530,11 +573,11 @@
                 <table class="rpt-table">
                     <thead>
                         <tr>
-                            <th colspan="4" class="grp-hd grp-emp">Employee Info</th>
-                            <th colspan="5" class="grp-hd grp-pay">Salary Components</th>
-                            <th colspan="8" class="grp-hd grp-pay">Payroll — {{ $month }}</th>
-                            <th colspan="3" class="grp-hd grp-loan">Loan Info</th>
-                            <th class="grp-hd grp-emp">Action</th>
+                            <th colspan="4"  class="grp-hd grp-emp">Employee Info</th>
+                            <th colspan="5"  class="grp-hd grp-pay">Salary Components</th>
+                            <th colspan="8"  class="grp-hd grp-pay">Payroll — {{ $month }}</th>
+                            <th colspan="3"  class="grp-hd grp-loan">Loan Info</th>
+                            <th colspan="1"  class="grp-hd grp-emp">Action</th>
                         </tr>
                         <tr>
                             <th class="col-hd text-center">Slip</th>
@@ -557,19 +600,25 @@
                             <th class="col-hd text-right">Loan Amt</th>
                             <th class="col-hd text-right">Monthly</th>
                             <th class="col-hd text-right">Remaining</th>
-                            <th class="col-hd text-center">Status/Action</th>
+                            <th class="col-hd text-center">Status / Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($employees as $employee)
                         @php
-                            $payroll = $employee->payrolls->first();
-                            $loan    = $employee->loans->first();
-                            $absent  = $payroll->absent_days ?? 0;
+                            $payroll          = $employee->payrolls->first();
+                            $loan             = $employee->loans->first();
+                            $absent           = $payroll->absent_days ?? 0;
                             $hasLoanInPayroll = $payroll && ($payroll->loan_deduction ?? 0) > 0;
-                            $hasActiveLoan = $loan && ($loan->remaining_amount ?? 0) > 0;
+                            $hasActiveLoan    = $loan && ($loan->remaining_amount ?? 0) > 0;
+
+                            // Payment logic based on payments relation
+                            $totalPaid = $payroll ? $payroll->payments->sum('paid_amount') : 0;
+                            $netSalary = $payroll ? ($payroll->net_salary ?? $payroll->net_payable ?? 0) : 0;
+                            $remaining = $netSalary - $totalPaid;
                         @endphp
                         <tr>
+                            {{-- Slip --}}
                             <td class="text-center">
                                 @if($payroll)
                                     <a href="{{ route('report.payslip', [$employee->id, $payroll->month]) }}" class="slip-btn">
@@ -579,17 +628,23 @@
                                         Slip
                                     </a>
                                 @else
-                                    <span class="mono" style="color:var(--text-muted); font-size:0.7rem;">—</span>
+                                    <span class="mono" style="color:var(--text-muted);font-size:0.7rem;">—</span>
                                 @endif
                             </td>
+
+                            {{-- Employee Info --}}
                             <td class="c-name">{{ $employee->name }}</td>
                             <td class="c-date">{{ \Carbon\Carbon::parse($employee->join_date)->format('d M Y') }}</td>
                             <td><span class="badge-des">{{ $employee->designation }}</span></td>
+
+                            {{-- Salary Components --}}
                             <td class="c-amber text-right">৳{{ number_format($employee->total_salary, 2) }}</td>
-                            <td class="c-mono text-right">৳{{ number_format($employee->basic_salary, 2) }}</td>
-                            <td class="c-mono text-right">৳{{ number_format($employee->house_rent, 2) }}</td>
-                            <td class="c-mono text-right">৳{{ number_format($employee->medical, 2) }}</td>
-                            <td class="c-mono text-right">৳{{ number_format($employee->conveyance, 2) }}</td>
+                            <td class="c-mono  text-right">৳{{ number_format($employee->basic_salary, 2) }}</td>
+                            <td class="c-mono  text-right">৳{{ number_format($employee->house_rent, 2) }}</td>
+                            <td class="c-mono  text-right">৳{{ number_format($employee->medical, 2) }}</td>
+                            <td class="c-mono  text-right">৳{{ number_format($employee->conveyance, 2) }}</td>
+
+                            {{-- Payroll --}}
                             <td class="text-center">
                                 @if($payroll)
                                     <span class="badge-mo">{{ $payroll->month }}</span>
@@ -635,8 +690,13 @@
                             <td class="text-right">
                                 <span class="mono" style="font-size:0.7rem;color:var(--green);font-weight:600;">{{ $employee->remaining_leave }}</span>
                             </td>
-                            <td class="c-green text-right">৳{{ number_format($payroll->net_payable ?? $employee->total_salary, 2) }}</td>
-                            
+
+                            {{-- Net Payable --}}
+                            <td class="c-green text-right">
+                                ৳{{ number_format($payroll->net_payable ?? $employee->total_salary, 2) }}
+                            </td>
+
+                            {{-- Loan Info --}}
                             <td class="c-mono text-right">
                                 @if($hasLoanInPayroll || $hasActiveLoan)
                                     ৳{{ number_format($loan->loan_amount ?? 0, 2) }}
@@ -659,42 +719,64 @@
                                 @endif
                             </td>
 
-                            <td class="text-center">
-                                <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                                    @if($payroll)
-                                        {{-- 🔹 পেমেন্ট লজিক আপডেট --}}
-                                        @if($payroll->status === 'paid_full')
-                                            <span class="paid-badge">
-                                                <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                Paid
-                                            </span>
-                                        @elseif($payroll->status === 'paid_partial')
-                                            {{-- হাফ পেমেন্ট করার পর এই বাটন আসবে --}}
-                                            <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="pay-btn" style="background: var(--gold-lt); color: var(--gold); border-color: #e8d8a0;" onclick="this.disabled=true; this.form.submit();">Pay Final</button>
-                                            </form>
-                                        @else
-                                            {{-- পেন্ডিং থাকলে এই বাটন আসবে --}}
-                                            <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="pay-btn" onclick="this.disabled=true; this.form.submit();">Pay</button>
-                                            </form>
-                                        @endif
-
-                                        {{-- শুধুমাত্র ফুললি পেইড না হওয়া পর্যন্ত ডিলিট বাটন থাকবে --}}
-                                        @if($payroll->status !== 'paid_full')
-                                            <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="del-btn">Delete</button>
-                                            </form>
-                                        @endif
+                            {{-- Status / Action --}}
+                            <td class="text-center" style="white-space:normal;">
+                                <div class="action-cell">
+                                @if($payroll)
+                                    @if($remaining <= 0)
+                                        {{-- Fully Paid --}}
+                                        <span class="paid-badge">
+                                            <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            Full Paid
+                                        </span>
+                                    @elseif($totalPaid > 0)
+                                        {{-- Half done — show badge + Pay Final Half button --}}
+                                        <span class="half-badge">
+                                            <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Half Done
+                                        </span>
+                                        <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="pay-btn-partial"
+                                                    onclick="this.disabled=true;this.innerText='...';this.form.submit();">
+                                                Pay Final Half
+                                            </button>
+                                        </form>
                                     @else
-                                        <span class="mono" style="color:var(--text-muted);font-size:0.7rem;">—</span>
+                                        {{-- Pending — Pay First Half --}}
+                                        <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="pay-btn"
+                                                    onclick="this.disabled=true;this.innerText='...';this.form.submit();">
+                                                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Pay First Half
+                                            </button>
+                                        </form>
                                     @endif
+
+                                    {{-- Delete — only while not fully paid --}}
+                                    @if($remaining > 0)
+                                        <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST"
+                                              onsubmit="return confirm('Are you sure? This will reverse leave & loan deduction.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="del-btn">
+                                                <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <span class="mono" style="color:var(--text-muted);font-size:0.7rem;">—</span>
+                                @endif
                                 </div>
                             </td>
                         </tr>
@@ -703,7 +785,8 @@
                             <td colspan="21">
                                 <div class="empty-state">
                                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
                                     <div class="empty-text">No payroll data for this period</div>
                                 </div>
@@ -734,9 +817,11 @@
                 </div>
             </div>
             @endif
-        </div>
+
+        </div>{{-- end .table-card --}}
 
         <div class="bottom-rule">End of Report</div>
+
     </div>
 </div>
 
