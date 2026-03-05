@@ -393,7 +393,7 @@
 
     {{-- Footer --}}
     <div class="sb-footer">
-        <form method="POST" action="">
+        <form method="POST" action="{{ route('logout' ) }}">
             @csrf
             <button type="submit" class="sb-logout">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
