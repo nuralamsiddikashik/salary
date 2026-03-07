@@ -270,9 +270,16 @@
         margin-bottom: 0.85rem;
     }
 
-    .preview-grid { display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; }
+    .preview-grid {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+        row-gap: 0.75rem;
+    }
 
-    .preview-item { flex: 1; text-align: center; }
+    .preview-item { flex: 1; text-align: center; min-width: 60px; }
 
     .preview-item-label {
         font-size: 0.58rem;
@@ -401,7 +408,9 @@
                                 @foreach($employees as $employee)
                                     <option value="{{ $employee->id }}"
                                             data-total-leave="{{ $employee->total_leave ?? 0 }}"
-                                            data-used-leave="{{ $employee->used_leave ?? 0 }}">
+                                            data-used-leave="{{ $employee->used_leave ?? 0 }}"
+                                            data-salary="{{ $employee->total_salary }}"
+                                            data-advance="{{ $employee->advances->sum('amount') }}">
                                         {{ $employee->name }}
                                     </option>
                                 @endforeach
@@ -434,12 +443,6 @@
                         </div>
 
                         {{-- 04: Leave Days --}}
-                        {{--
-                            Controller logic:
-                            - leave_days <= absent_days হতে হবে
-                            - leave_days <= employee.remaining_leave হতে হবে
-                            - Leave কাটলে সেই দিনের salary deduct হবে না
-                        --}}
                         <div class="field">
                             <div class="field-row">
                                 <label for="leave_days">Leave Days</label>
@@ -480,6 +483,16 @@
                             <div class="preview-item">
                                 <div class="preview-item-label">Leave</div>
                                 <div class="preview-item-value" id="preview-leave">0 day(s)</div>
+                            </div>
+                            <div class="preview-divider"></div>
+                            <div class="preview-item">
+                                <div class="preview-item-label">Salary</div>
+                                <div class="preview-item-value" id="preview-salary" style="color:var(--green);">৳0</div>
+                            </div>
+                            <div class="preview-divider"></div>
+                            <div class="preview-item">
+                                <div class="preview-item-label">Advance</div>
+                                <div class="preview-item-value" id="preview-advance" style="color:var(--red);">৳0</div>
                             </div>
                         </div>
                     </div>
@@ -571,36 +584,43 @@
         display.className = 'stepper-display' + (absentDays > 0 ? ' has-absent' : '');
         previewAbs.textContent = absentDays + ' day(s)';
         previewAbs.style.color = absentDays > 0 ? 'var(--red)' : 'var(--green)';
-
-        // Leave cannot exceed absent — revalidate
         validateLeave();
     }
 
     document.getElementById('btn-plus').addEventListener('click',  () => { absentDays++; updateAbsent(); });
     document.getElementById('btn-minus').addEventListener('click', () => { if (absentDays > 0) { absentDays--; updateAbsent(); } });
 
-    // ── Employee select → leave data ──
+    // ── Employee select → leave + salary + advance data ──
     const empSelect      = document.getElementById('employee_id');
     const previewEmp     = document.getElementById('preview-employee');
+    const previewSalary  = document.getElementById('preview-salary');
+    const previewAdvance = document.getElementById('preview-advance');
     const remainingLeave = document.getElementById('remaining_leave');
     const leaveWarn      = document.getElementById('leave_warn');
     const leaveInput     = document.getElementById('leave_days');
     const previewLeave   = document.getElementById('preview-leave');
 
-    let maxLeave = 0; // employee remaining leave
+    let maxLeave = 0;
 
     empSelect.addEventListener('change', function () {
-        const selected  = empSelect.options[empSelect.selectedIndex];
+        const selected   = empSelect.options[empSelect.selectedIndex];
         previewEmp.textContent = selected.text || '—';
 
         const totalLeave = parseInt(selected.getAttribute('data-total-leave')) || 0;
         const usedLeave  = parseInt(selected.getAttribute('data-used-leave'))  || 0;
-        maxLeave = Math.max(0, totalLeave - usedLeave);
+        const salary     = parseFloat(selected.getAttribute('data-salary'))    || 0;
+        const advance    = parseFloat(selected.getAttribute('data-advance'))   || 0;
 
+        previewSalary.textContent  = '৳' + salary.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        previewAdvance.textContent = advance > 0
+            ? '৳' + advance.toLocaleString('en-IN', { minimumFractionDigits: 2 })
+            : '৳0';
+
+        maxLeave = Math.max(0, totalLeave - usedLeave);
         remainingLeave.textContent = maxLeave + ' day(s)';
 
-        // Reset leave input on employee change
-        leaveInput.value = 0;
+        // Reset leave on employee change
+        leaveInput.value         = 0;
         previewLeave.textContent = '0 day(s)';
         previewLeave.style.color = '';
         leaveWarn.style.display  = 'none';
@@ -609,17 +629,17 @@
 
     // ── Leave days validation & preview ──
     function validateLeave() {
-        const val  = parseInt(leaveInput.value) || 0;
-        const limit = Math.min(maxLeave, absentDays); // cannot exceed either
+        const val   = parseInt(leaveInput.value) || 0;
+        const limit = Math.min(maxLeave, absentDays);
 
         previewLeave.textContent = val + ' day(s)';
         previewLeave.style.color = val > 0 ? 'var(--gold)' : '';
 
         if (val > limit) {
-            leaveWarn.style.display  = 'inline';
+            leaveWarn.style.display      = 'inline';
             leaveInput.style.borderColor = 'var(--red)';
         } else {
-            leaveWarn.style.display  = 'none';
+            leaveWarn.style.display      = 'none';
             leaveInput.style.borderColor = '';
         }
     }

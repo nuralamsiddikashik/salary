@@ -16,6 +16,7 @@ class Payroll extends Model {
         'net_payable',
         'leave_used',
         'salary_cut_days',
+        'advance_deduction',
     ];
 
     public function employee() {

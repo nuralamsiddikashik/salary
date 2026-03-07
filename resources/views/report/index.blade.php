@@ -232,19 +232,24 @@
     .tbl-wrap::-webkit-scrollbar-track { background: var(--bg); }
     .tbl-wrap::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
 
+    .rpt-table * {
+        font-family: 'Arial Narrow', Arial, sans-serif !important;
+    }
+
     .rpt-table {
         width: 100%;
         border-collapse: collapse;
-        table-layout: fixed;
-        min-width: 1500px;
+        table-layout: auto;
+        min-width: 2000px;
         font-size: 0.77rem;
         letter-spacing: -0.01em;
+        font-family: 'Arial Narrow', Arial, sans-serif;
     }
 
     .grp-hd {
-        font-family: 'DM Mono', monospace;
-        font-size: 0.52rem;
-        font-weight: 600;
+        font-family: 'Arial Narrow', Arial, sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
         letter-spacing: 0.18em;
         text-transform: uppercase;
         padding: 0.5rem 0.75rem;
@@ -256,8 +261,8 @@
     .grp-loan { background: var(--red-lt);    color: var(--red);    border-bottom: 2px solid #e8c5c5; }
 
     .col-hd {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.6rem;
+        font-family: 'Arial Narrow', Arial, sans-serif;
+        font-size: 0.65rem;
         font-weight: 700;
         color: var(--text-secondary);
         letter-spacing: 0.06em;
@@ -266,8 +271,6 @@
         background: #f8f8f5;
         border-bottom: 2px solid var(--border-md);
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .rpt-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
@@ -278,18 +281,16 @@
         padding: 0.6rem 0.65rem;
         vertical-align: middle;
         color: var(--text-secondary);
-        overflow: hidden;
-        text-overflow: ellipsis;
         white-space: nowrap;
         font-feature-settings: "tnum";
     }
 
-    .c-name  { font-family: 'Inter', sans-serif; font-weight: 600; color: var(--text-primary); font-size: 0.76rem; letter-spacing: -0.01em; }
-    .c-date  { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--text-muted); letter-spacing: 0; }
-    .c-mono  { font-family: 'DM Mono', monospace; font-size: 0.68rem; font-feature-settings: "tnum"; }
-    .c-amber { font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 600; color: var(--gold); font-feature-settings: "tnum"; }
-    .c-green { font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 700; color: var(--green); font-feature-settings: "tnum"; }
-    .c-red   { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--red); font-feature-settings: "tnum"; }
+    .c-name  { font-family: 'Arial Narrow', Arial, sans-serif; font-weight: 600; color: var(--text-primary); font-size: 0.76rem; letter-spacing: -0.01em; }
+    .c-date  { font-family: 'Arial Narrow', Arial, sans-serif; font-size: 0.63rem; color: var(--text-muted); letter-spacing: 0; }
+    .c-mono  { font-family: 'Arial Narrow', Arial, sans-serif; font-size: 0.68rem; font-feature-settings: "tnum"; }
+    .c-amber { font-family: 'Arial Narrow', Arial, sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--gold); font-feature-settings: "tnum"; }
+    .c-green { font-family: 'Arial Narrow', Arial, sans-serif; font-size: 0.68rem; font-weight: 700; color: var(--green); font-feature-settings: "tnum"; }
+    .c-red   { font-family: 'Arial Narrow', Arial, sans-serif; font-size: 0.68rem; color: var(--red); font-feature-settings: "tnum"; }
 
     .badge-des {
         display: inline-block;
@@ -300,9 +301,6 @@
         background: var(--accent-lt);
         color: var(--accent);
         white-space: nowrap;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .badge-mo {
@@ -310,7 +308,7 @@
         padding: 0.18rem 0.55rem;
         border-radius: 4px;
         font-size: 0.62rem;
-        font-family: 'DM Mono', monospace;
+        font-family: 'Arial Narrow', Arial, sans-serif;
         background: var(--gold-lt);
         color: var(--gold);
     }
@@ -326,7 +324,7 @@
         font-weight: 700;
         background: var(--red-lt);
         color: var(--red);
-        font-family: 'DM Mono', monospace;
+        font-family: 'Arial Narrow', Arial, sans-serif;
     }
 
     .slip-btn {
@@ -574,8 +572,8 @@
                     <thead>
                         <tr>
                             <th colspan="4"  class="grp-hd grp-emp">Employee Info</th>
-                            <th colspan="5"  class="grp-hd grp-pay">Salary Components</th>
-                            <th colspan="8"  class="grp-hd grp-pay">Payroll — {{ $month }}</th>
+                            <th colspan="6"  class="grp-hd grp-pay">Salary Components</th>
+                            <th colspan="10" class="grp-hd grp-pay">Payroll — {{ $month }}</th>
                             <th colspan="3"  class="grp-hd grp-loan">Loan Info</th>
                             <th colspan="1"  class="grp-hd grp-emp">Action</th>
                         </tr>
@@ -589,13 +587,16 @@
                             <th class="col-hd text-right">House Rent</th>
                             <th class="col-hd text-right">Medical</th>
                             <th class="col-hd text-right">Conveyance</th>
+                            <th class="col-hd text-right">Advance</th>
                             <th class="col-hd text-center">Month</th>
                             <th class="col-hd text-center">Absent</th>
                             <th class="col-hd text-center">Leave Used</th>
                             <th class="col-hd text-center">Cut Days</th>
                             <th class="col-hd text-right">Absent Amt</th>
+                            <th class="col-hd text-right">Adv. Deduct</th>
                             <th class="col-hd text-right">Loan Deduct</th>
                             <th class="col-hd text-right">Rem. Leave</th>
+                            <th class="col-hd text-right" style="background:#fff5f5;border-bottom:2px solid #e8c5c5;">Total Deduct</th>
                             <th class="col-hd text-right">Net Payable</th>
                             <th class="col-hd text-right">Loan Amt</th>
                             <th class="col-hd text-right">Monthly</th>
@@ -611,11 +612,17 @@
                             $absent           = $payroll->absent_days ?? 0;
                             $hasLoanInPayroll = $payroll && ($payroll->loan_deduction ?? 0) > 0;
                             $hasActiveLoan    = $loan && ($loan->remaining_amount ?? 0) > 0;
+                            $advance          = $employee->advances->sum('amount');
 
                             // Payment logic based on payments relation
                             $totalPaid = $payroll ? $payroll->payments->sum('paid_amount') : 0;
                             $netSalary = $payroll ? ($payroll->net_salary ?? $payroll->net_payable ?? 0) : 0;
                             $remaining = $netSalary - $totalPaid;
+
+                            // Total deduction
+                            $totalDeduction = ($payroll->absent_amount ?? 0)
+                                            + ($payroll->advance_deduction ?? 0)
+                                            + ($payroll->loan_deduction ?? 0);
                         @endphp
                         <tr>
                             {{-- Slip --}}
@@ -643,6 +650,13 @@
                             <td class="c-mono  text-right">৳{{ number_format($employee->house_rent, 2) }}</td>
                             <td class="c-mono  text-right">৳{{ number_format($employee->medical, 2) }}</td>
                             <td class="c-mono  text-right">৳{{ number_format($employee->conveyance, 2) }}</td>
+                            <td class="c-mono  text-right">
+                                @if($advance > 0)
+                                    <span style="color:var(--gold);font-weight:600;">৳{{ number_format($advance, 2) }}</span>
+                                @else
+                                    <span style="color:var(--text-muted)">—</span>
+                                @endif
+                            </td>
 
                             {{-- Payroll --}}
                             <td class="text-center">
@@ -682,6 +696,12 @@
                                 @endif
                             </td>
                             <td class="c-red text-right">
+                                @if(($payroll->advance_deduction ?? 0) > 0)
+                                    ৳{{ number_format($payroll->advance_deduction, 2) }}
+                                @else <span style="color:var(--text-muted)">—</span>
+                                @endif
+                            </td>
+                            <td class="c-red text-right">
                                 @if(($payroll->loan_deduction ?? 0) > 0)
                                     ৳{{ number_format($payroll->loan_deduction, 2) }}
                                 @else <span style="color:var(--text-muted)">—</span>
@@ -689,6 +709,17 @@
                             </td>
                             <td class="text-right">
                                 <span class="mono" style="font-size:0.7rem;color:var(--green);font-weight:600;">{{ $employee->remaining_leave }}</span>
+                            </td>
+
+                            {{-- Total Deduction --}}
+                            <td class="text-right" style="background:#fff8f8;">
+                                @if($payroll && $totalDeduction > 0)
+                                    <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:var(--red);">
+                                        ৳{{ number_format($totalDeduction, 2) }}
+                                    </span>
+                                @else
+                                    <span style="color:var(--text-muted)">—</span>
+                                @endif
                             </td>
 
                             {{-- Net Payable --}}
@@ -782,7 +813,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="21">
+                            <td colspan="24">
                                 <div class="empty-state">
                                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -798,7 +829,7 @@
             </div>
 
             @if(count($employees) > 0)
-            <div class="summary-bar">
+            <div class="summary-bar" style="grid-template-columns: repeat(6, 1fr);">
                 <div class="sum-item">
                     <div class="sum-label">Total Salary</div>
                     <div class="sum-value">৳{{ number_format($employees->sum('total_salary'), 2) }}</div>
@@ -806,6 +837,14 @@
                 <div class="sum-item">
                     <div class="sum-label">Net Payable</div>
                     <div class="sum-value v-green">৳{{ number_format($employees->sum(fn($e) => (float)($e->payrolls->first()->net_payable ?? $e->total_salary)), 2) }}</div>
+                </div>
+                <div class="sum-item" style="background:#fff8f8;">
+                    <div class="sum-label">Total Deduction</div>
+                    <div class="sum-value v-red">৳{{ number_format($employees->sum(fn($e) => ($e->payrolls->first()->absent_amount ?? 0) + ($e->payrolls->first()->advance_deduction ?? 0) + ($e->payrolls->first()->loan_deduction ?? 0)), 2) }}</div>
+                </div>
+                <div class="sum-item">
+                    <div class="sum-label">Advance Total</div>
+                    <div class="sum-value v-red">৳{{ number_format($employees->sum(fn($e) => $e->advances->sum('amount')), 2) }}</div>
                 </div>
                 <div class="sum-item">
                     <div class="sum-label">Loan Deductions</div>

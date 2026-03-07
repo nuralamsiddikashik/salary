@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvanceSalaryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
@@ -62,5 +63,15 @@ Route::middleware( 'auth' )->group( function () {
 
     Route::post( '/logout', [AuthController::class, 'logout'] )
         ->name( 'logout' );
+
+    Route::controller( AdvanceSalaryController::class )->prefix( 'advance' )->group( function () {
+
+        Route::get( '/create', 'create' )->name( 'advance.create' );
+
+        Route::post( '/store', 'store' )->name( 'advance.store' );
+
+        Route::get( '/list', 'index' )->name( 'advance.list' );
+
+    } );
 
 } );

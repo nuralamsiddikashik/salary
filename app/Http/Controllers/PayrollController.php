@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\AdvanceSalary;
 use App\Models\Employee;
 use App\Models\Loan;
 use App\Models\Payroll;
@@ -15,6 +16,113 @@ class PayrollController extends Controller {
         $employees = Employee::all();
         return view( 'payroll.generate', compact( 'employees' ) );
     }
+
+    // public function generate( Request $request ) {
+    //     $request->validate( [
+    //         'employee_id' => 'required|exists:employees,id',
+    //         'month'       => 'required|date',
+    //         'absent_days' => 'required|integer|min:0',
+    //         'leave_days'  => 'nullable|integer|min:0',
+    //     ] );
+
+    //     DB::beginTransaction();
+
+    //     try {
+
+    //         $employee = Employee::lockForUpdate()->findOrFail( $request->employee_id );
+
+    //         $month = Carbon::parse( $request->month )->format( 'Y-m' );
+
+    //         if ( Payroll::where( 'employee_id', $employee->id )
+    //             ->where( 'month', $month )
+    //             ->exists() ) {
+
+    //             DB::rollBack();
+    //             return back()->with( 'error', 'Salary already generated for this month' );
+    //         }
+
+    //         $currentYear = Carbon::parse( $month )->year;
+
+    //         if ( $employee->leave_year != $currentYear ) {
+    //             $employee->used_leave = 0;
+    //             $employee->leave_year = $currentYear;
+    //             $employee->save();
+    //         }
+
+    //         $absentDays = (int) $request->absent_days;
+    //         $leaveDays  = (int) ( $request->leave_days ?? 0 );
+
+    //         $daysInMonth = Carbon::parse( $month . '-01' )->daysInMonth;
+
+    //         if ( $absentDays > $daysInMonth ) {
+    //             DB::rollBack();
+    //             return back()->with( 'error', 'Invalid absent days' );
+    //         }
+
+    //         if ( $leaveDays > $absentDays ) {
+    //             DB::rollBack();
+    //             return back()->with( 'error', 'Leave cannot exceed absent days' );
+    //         }
+
+    //         if ( $leaveDays > $employee->remaining_leave ) {
+    //             DB::rollBack();
+    //             return back()->with( 'error', 'Not enough leave balance' );
+    //         }
+
+    //         $salaryCutDays = $absentDays - $leaveDays;
+
+    //         $dailySalary  = round( $employee->total_salary / $daysInMonth, 2 );
+    //         $absentAmount = round( $dailySalary * $salaryCutDays, 2 );
+
+    //         $employee->used_leave += $leaveDays;
+    //         $employee->save();
+
+    //         $loan = $employee->loans()
+    //             ->where( 'remaining_amount', '>', 0 )
+    //             ->lockForUpdate()
+    //             ->first();
+
+    //         $loanDeduction = 0;
+    //         $loanId        = null;
+
+    //         if ( $loan ) {
+    //             $loanDeduction = min( $loan->monthly_deduction, $loan->remaining_amount );
+    //             $loan->remaining_amount -= $loanDeduction;
+    //             $loan->save();
+    //             $loanId = $loan->id;
+    //         }
+
+    //         $netPayable = round(
+    //             $employee->total_salary
+    //              - $absentAmount
+    //              - $loanDeduction,
+    //             2
+    //         );
+
+    //         Payroll::create( [
+    //             'employee_id'     => $employee->id,
+    //             'month'           => $month,
+    //             'absent_days'     => $absentDays,
+    //             'leave_used'      => $leaveDays,
+    //             'salary_cut_days' => $salaryCutDays,
+    //             'absent_amount'   => $absentAmount,
+    //             'loan_id'         => $loanId,
+    //             'loan_deduction'  => $loanDeduction,
+    //             'net_payable'     => $netPayable,
+    //             'paid_amount'     => 0,
+    //             'status'          => 'generated',
+    //         ] );
+
+    //         DB::commit();
+
+    //         return back()->with( 'success', 'Salary Generated Successfully' );
+
+    //     } catch ( \Exception $e ) {
+
+    //         DB::rollBack();
+    //         return back()->with( 'error', 'Something went wrong' );
+    //     }
+    // }
 
     public function generate( Request $request ) {
         $request->validate( [
@@ -32,10 +140,11 @@ class PayrollController extends Controller {
 
             $month = Carbon::parse( $request->month )->format( 'Y-m' );
 
-            if ( Payroll::where( 'employee_id', $employee->id )
+            if (
+                Payroll::where( 'employee_id', $employee->id )
                 ->where( 'month', $month )
-                ->exists() ) {
-
+                ->exists()
+            ) {
                 DB::rollBack();
                 return back()->with( 'error', 'Salary already generated for this month' );
             }
@@ -76,6 +185,12 @@ class PayrollController extends Controller {
             $employee->used_leave += $leaveDays;
             $employee->save();
 
+            /*
+            |--------------------------------------------------------------------------
+            | Loan Deduction
+            |--------------------------------------------------------------------------
+             */
+
             $loan = $employee->loans()
                 ->where( 'remaining_amount', '>', 0 )
                 ->lockForUpdate()
@@ -91,25 +206,55 @@ class PayrollController extends Controller {
                 $loanId = $loan->id;
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | Advance / Half Salary Deduction
+            |--------------------------------------------------------------------------
+             */
+
+            $advanceAmount = AdvanceSalary::where( 'employee_id', $employee->id )
+                ->where( 'month', $month )
+                ->sum( 'amount' );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Net Payable
+            |--------------------------------------------------------------------------
+             */
+
             $netPayable = round(
                 $employee->total_salary
                  - $absentAmount
-                 - $loanDeduction,
+                 - $loanDeduction
+                 - $advanceAmount,
                 2
             );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Payroll Create
+            |--------------------------------------------------------------------------
+             */
+
             Payroll::create( [
-                'employee_id'     => $employee->id,
-                'month'           => $month,
-                'absent_days'     => $absentDays,
-                'leave_used'      => $leaveDays,
-                'salary_cut_days' => $salaryCutDays,
-                'absent_amount'   => $absentAmount,
-                'loan_id'         => $loanId,
-                'loan_deduction'  => $loanDeduction,
-                'net_payable'     => $netPayable,
-                'paid_amount'     => 0,
-                'status'          => 'generated',
+                'employee_id'       => $employee->id,
+                'month'             => $month,
+
+                'absent_days'       => $absentDays,
+                'leave_used'        => $leaveDays,
+                'salary_cut_days'   => $salaryCutDays,
+
+                'absent_amount'     => $absentAmount,
+
+                'loan_id'           => $loanId,
+                'loan_deduction'    => $loanDeduction,
+
+                'advance_deduction' => $advanceAmount,
+
+                'net_payable'       => $netPayable,
+
+                'paid_amount'       => 0,
+                'status'            => 'generated',
             ] );
 
             DB::commit();
@@ -119,6 +264,7 @@ class PayrollController extends Controller {
         } catch ( \Exception $e ) {
 
             DB::rollBack();
+
             return back()->with( 'error', 'Something went wrong' );
         }
     }

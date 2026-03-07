@@ -8,16 +8,16 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Arial Narrow', Arial, sans-serif;
             background: #f0efe9;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 2.5rem 1.5rem;
+            padding: 1.5rem 1rem;
             color: #1a1a18;
-            font-size: 13px;
+            font-size: 11px;
         }
 
         /* Print button */
@@ -31,12 +31,12 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.5rem 1.1rem;
+            padding: 0.45rem 1rem;
             background: #1a3a5c;
             color: #fff;
             border: none;
             border-radius: 5px;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Arial Narrow', Arial, sans-serif;
             font-size: 0.72rem;
             font-weight: 600;
             letter-spacing: 0.03em;
@@ -50,12 +50,12 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.5rem 1.1rem;
+            padding: 0.45rem 1rem;
             background: #fff;
             color: #5a5a54;
             border: 1px solid #d0d0c8;
             border-radius: 5px;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Arial Narrow', Arial, sans-serif;
             font-size: 0.72rem;
             font-weight: 600;
             text-decoration: none;
@@ -66,14 +66,14 @@
         /* Slip wrapper */
         .slip {
             width: 100%;
-            max-width: 680px;
+            max-width: 560px;
             background: #ffffff;
             border: 1px solid #d8d8d0;
         }
 
         /* ── Header ── */
         .slip-header {
-            padding: 1.5rem 2rem;
+            padding: 0.9rem 1.25rem;
             border-bottom: 2px solid #1a1a18;
             display: flex;
             justify-content: space-between;
@@ -81,39 +81,40 @@
         }
 
         .company-block .company-name {
-            font-size: 1.15rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #1a1a18;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.02em;
             line-height: 1;
+            font-family: 'Arial Narrow', Arial, sans-serif;
         }
 
         .company-block .company-sub {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.18em;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             color: #9a9a92;
-            margin-top: 0.3rem;
+            margin-top: 0.25rem;
         }
 
         .slip-title-block { text-align: right; }
 
         .slip-title-block .slip-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 0.2em;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             color: #9a9a92;
             display: block;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.15rem;
         }
 
         .slip-title-block .slip-month {
-            font-size: 1rem;
+            font-size: 0.88rem;
             font-weight: 700;
             color: #1a1a18;
-            letter-spacing: -0.01em;
+            font-family: 'Arial Narrow', Arial, sans-serif;
         }
 
         /* ── Employee Info ── */
@@ -124,36 +125,37 @@
         }
 
         .emp-cell {
-            padding: 0.85rem 1.25rem;
+            padding: 0.55rem 1rem;
             border-right: 1px solid #e2e2dc;
         }
         .emp-cell:last-child { border-right: none; }
 
         .emp-cell .ec-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.56rem;
-            letter-spacing: 0.16em;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.52rem;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             color: #9a9a92;
             display: block;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
         }
 
         .emp-cell .ec-val {
-            font-size: 0.82rem;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.75rem;
             font-weight: 600;
             color: #1a1a18;
         }
 
         /* ── Section label ── */
         .section-label {
-            padding: 0.5rem 1.25rem;
+            padding: 0.35rem 1rem;
             background: #f8f8f5;
             border-bottom: 1px solid #e2e2dc;
-            font-family: 'DM Mono', monospace;
-            font-size: 0.56rem;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.52rem;
             font-weight: 600;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             color: #9a9a92;
         }
@@ -170,13 +172,13 @@
         }
 
         .items-table thead th {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.6rem;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.56rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: #5a5a54;
-            padding: 0.55rem 1.25rem;
+            padding: 0.4rem 1rem;
             text-align: left;
         }
         .items-table thead th:last-child { text-align: right; }
@@ -187,123 +189,121 @@
         .items-table tbody tr:last-child { border-bottom: none; }
 
         .items-table tbody td {
-            padding: 0.75rem 1.25rem;
+            padding: 0.45rem 1rem;
             vertical-align: middle;
         }
 
         .item-name {
-            font-size: 0.8rem;
-            font-weight: 500;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.73rem;
+            font-weight: 600;
             color: #1a1a18;
         }
 
         .item-note {
-            font-size: 0.68rem;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.62rem;
             color: #9a9a92;
-            margin-top: 0.15rem;
+            margin-top: 0.1rem;
         }
 
         .item-amount {
             text-align: right;
-            font-family: 'DM Mono', monospace;
-            font-size: 0.78rem;
-            font-weight: 500;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.73rem;
+            font-weight: 600;
             color: #1a1a18;
             font-feature-settings: "tnum";
             white-space: nowrap;
         }
 
-        .item-amount.earn  { color: #1a5c3a; }
+        .item-amount.earn   { color: #1a5c3a; }
         .item-amount.deduct { color: #8a1a1a; }
-        .item-amount.zero  { color: #c0c0b8; }
+        .item-amount.zero   { color: #c0c0b8; }
 
         /* ── Net payable ── */
         .net-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem 1.25rem;
-            background: #1a3a5c;
+            padding: 0.75rem 1rem;
+            background: transparent;
             border-top: 2px solid #1a1a18;
         }
 
         .net-label-block .net-eyebrow {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.56rem;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.52rem;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: #8aaac8;
+            color: #9a9a92;
             display: block;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.15rem;
         }
 
         .net-label-block .net-title {
-            font-size: 0.9rem;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.82rem;
             font-weight: 600;
-            color: #ffffff;
-            letter-spacing: -0.01em;
+            color: #1a1a18;
         }
 
         .net-amount-block {
-            font-family: 'DM Mono', monospace;
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #ffffff;
-            letter-spacing: -0.02em;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1a1a18;
+            letter-spacing: 0.01em;
             font-feature-settings: "tnum";
         }
 
         .net-amount-block .taka {
-            font-size: 1rem;
-            opacity: 0.7;
+            font-size: 0.88rem;
+            opacity: 0.6;
             margin-right: 0.1rem;
         }
 
         /* ── Footer ── */
         .slip-footer {
-            padding: 0.85rem 1.25rem;
+            padding: 1rem 1.25rem 0.75rem;
             border-top: 1px solid #e2e2dc;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             background: #fafaf8;
         }
 
-        .footer-note {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #b0b0a8;
+        .sig-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
         }
 
-        .footer-sig {
-            text-align: right;
+        .sig-block {
+            flex: 1;
+            text-align: center;
         }
 
-        .footer-sig .sig-line {
-            width: 120px;
+        .sig-block .sig-line {
             border-top: 1px solid #9a9a92;
             margin-bottom: 0.3rem;
         }
 
-        .footer-sig .sig-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.56rem;
-            letter-spacing: 0.12em;
+        .sig-block .sig-label {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             color: #9a9a92;
         }
 
         /* ── Print ── */
         @media print {
-            @page { margin: 12mm 15mm; size: A4; }
+            @page { margin: 8mm 10mm; size: A4; }
 
             body {
                 background: #fff !important;
                 padding: 0 !important;
                 display: block !important;
-                font-family: 'Inter', sans-serif !important;
+                font-family: 'Arial Narrow', Arial, sans-serif !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
@@ -319,14 +319,14 @@
 
             /* Header */
             .slip-header {
-                padding: 1.2rem 1.5rem !important;
+                padding: 0.75rem 1rem !important;
                 border-bottom: 2px solid #1a1a18 !important;
                 background: #fff !important;
                 -webkit-print-color-adjust: exact !important;
             }
 
             .company-block .company-name {
-                font-size: 1rem !important;
+                font-size: 0.88rem !important;
                 font-weight: 700 !important;
                 color: #1a1a18 !important;
             }
@@ -337,14 +337,14 @@
                 print-color-adjust: exact !important;
             }
             .emp-cell {
-                padding: 0.7rem 1rem !important;
+                padding: 0.45rem 0.85rem !important;
             }
             .emp-cell .ec-label {
-                font-size: 0.52rem !important;
+                font-size: 0.48rem !important;
                 color: #9a9a92 !important;
             }
             .emp-cell .ec-val {
-                font-size: 0.78rem !important;
+                font-size: 0.7rem !important;
                 color: #1a1a18 !important;
             }
 
@@ -353,8 +353,8 @@
                 background: #f8f8f5 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                font-size: 0.52rem !important;
-                padding: 0.4rem 1rem !important;
+                font-size: 0.48rem !important;
+                padding: 0.3rem 0.85rem !important;
             }
 
             /* Table */
@@ -364,16 +364,16 @@
                 print-color-adjust: exact !important;
             }
             .items-table thead th {
-                font-size: 0.56rem !important;
-                padding: 0.45rem 1rem !important;
+                font-size: 0.52rem !important;
+                padding: 0.35rem 0.85rem !important;
                 color: #5a5a54 !important;
             }
             .items-table tbody td {
-                padding: 0.6rem 1rem !important;
+                padding: 0.4rem 0.85rem !important;
             }
-            .item-name { font-size: 0.75rem !important; color: #1a1a18 !important; }
-            .item-note { font-size: 0.65rem !important; color: #9a9a92 !important; }
-            .item-amount { font-size: 0.74rem !important; }
+            .item-name { font-size: 0.68rem !important; color: #1a1a18 !important; }
+            .item-note { font-size: 0.58rem !important; color: #9a9a92 !important; }
+            .item-amount { font-size: 0.68rem !important; }
             .item-amount.earn   { color: #1a5c3a !important; -webkit-print-color-adjust: exact !important; }
             .item-amount.deduct { color: #8a1a1a !important; -webkit-print-color-adjust: exact !important; }
             .item-amount.zero   { color: #c0c0b8 !important; }
@@ -394,27 +394,25 @@
 
             /* Net payable */
             .net-row {
-                background: #1a3a5c !important;
+                background: transparent !important;
                 border-top: 2px solid #1a1a18 !important;
-                padding: 0.85rem 1rem !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
+                padding: 0.65rem 0.85rem !important;
             }
             .net-label-block .net-eyebrow {
-                color: #8aaac8 !important;
-                font-size: 0.52rem !important;
+                color: #9a9a92 !important;
+                font-size: 0.48rem !important;
             }
             .net-label-block .net-title {
-                color: #ffffff !important;
-                font-size: 0.85rem !important;
+                color: #1a1a18 !important;
+                font-size: 0.78rem !important;
             }
             .net-amount-block {
-                color: #ffffff !important;
-                font-size: 1.25rem !important;
+                color: #1a1a18 !important;
+                font-size: 1.05rem !important;
             }
             .net-amount-block .taka {
-                color: #ffffff !important;
-                opacity: 0.7 !important;
+                color: #1a1a18 !important;
+                opacity: 0.6 !important;
             }
 
             /* Footer */
@@ -422,11 +420,10 @@
                 background: #fafaf8 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                padding: 0.7rem 1rem !important;
+                padding: 0.85rem 1rem 0.65rem !important;
             }
-            .footer-note { font-size: 0.54rem !important; color: #b0b0a8 !important; }
-            .footer-sig .sig-line { border-top: 1px solid #9a9a92 !important; }
-            .footer-sig .sig-label { font-size: 0.52rem !important; color: #9a9a92 !important; }
+            .sig-block .sig-line { border-top: 1px solid #9a9a92 !important; }
+            .sig-block .sig-label { font-size: 0.48rem !important; color: #9a9a92 !important; }
         }
     </style>
 </head>
@@ -453,7 +450,7 @@
     {{-- Header --}}
     <div class="slip-header">
         <div class="company-block">
-            <div class="company-name">ASHIS AUTO SOLUTION</div>
+            <div class="company-name">Company Name</div>
             <div class="company-sub">Salary Disbursement</div>
         </div>
         <div class="slip-title-block">
@@ -572,6 +569,26 @@
                 </td>
             </tr>
 
+            <tr style="background:#fff8f8;">
+                <td>
+                    <div class="item-name">Advance Salary Deduction</div>
+                </td>
+                <td>
+                    <span class="item-note">
+                        @if(($advanceAmount ?? 0) > 0) Advance recovered
+                        @else No advance taken
+                        @endif
+                    </span>
+                </td>
+                <td class="item-amount {{ ($advanceAmount ?? 0) > 0 ? 'deduct' : 'zero' }}">
+                    @if(($advanceAmount ?? 0) > 0)
+                        − {{ number_format($advanceAmount, 2) }}
+                    @else
+                        —
+                    @endif
+                </td>
+            </tr>
+
         </tbody>
     </table>
 
@@ -586,12 +603,21 @@
         </div>
     </div>
 
-    {{-- Footer --}}
+    {{-- Footer / Signatures --}}
     <div class="slip-footer">
-        <span class="footer-note">Computer generated · Not requires signature</span>
-        <div class="footer-sig">
-            <div class="sig-line"></div>
-            <div class="sig-label">Authorised Signatory</div>
+        <div class="sig-row">
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Accounts</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Director</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Managing Director</div>
+            </div>
         </div>
     </div>
 

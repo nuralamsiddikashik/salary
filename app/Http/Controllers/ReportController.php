@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdvanceSalary;
 use App\Models\Employee;
 use App\Models\Payroll;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -11,48 +12,17 @@ use Illuminate\Support\Carbon;
 class ReportController extends Controller {
 
     // private function getEmployees( Request $request, string $month ) {
-    //     $month = Carbon::parse( $month )->format( 'Y-m' );
+    //     $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )->format( 'Y-m' );
 
-    //     return Employee::with( [
-    //         'payrolls' => function ( $q ) use ( $month ) {
-    //             $q->where( 'month', $month );
-    //         },
-    //     ] )
-    //         ->when( $request->employee_id, function ( $q ) use ( $request ) {
-    //             $q->where( 'id', $request->employee_id );
-    //         } )
-    //         ->whereHas( 'payrolls', function ( $q ) use ( $month ) {
-    //             $q->where( 'month', $month );
-    //         } )
-    //         ->orderBy( 'name' )
-    //         ->get();
-    // }
-
-    // private function getEmployees( Request $request, string $month ) {
-    //     // ✅ Strict month validation (format: YYYY-MM)
-    //     try {
-    //         $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )
-    //             ->format( 'Y-m' );
-    //     } catch ( \Exception $e ) {
-    //         throw ValidationException::withMessages( [
-    //             'month' => 'Invalid month format. Expected format: YYYY-MM',
-    //         ] );
-    //     }
-
-    //     // ✅ Safe integer casting (prevents invalid input)
     //     $employeeId = $request->integer( 'employee_id' );
 
     //     return Employee::query()
-    //         ->when( $employeeId, function ( $query ) use ( $employeeId ) {
-    //             $query->where( 'id', $employeeId );
-    //         } )
-    //         ->whereHas( 'payrolls', function ( $query ) use ( $formattedMonth ) {
-    //             $query->where( 'month', $formattedMonth );
-    //         } )
-    //         ->with( [
-    //             'payrolls' => function ( $query ) use ( $formattedMonth ) {
-    //                 $query->where( 'month', $formattedMonth );
-    //             },
+    //         ->when( $employeeId, fn( $q ) => $q->where( 'id', $employeeId ) )
+    //         ->whereHas( 'payrolls', fn( $q ) =>
+    //             $q->where( 'month', $formattedMonth )
+    //         )
+    //         ->with( ['payrolls' => fn( $q ) =>
+    //             $q->where( 'month', $formattedMonth ),
     //         ] )
     //         ->orderBy( 'name' )
     //         ->get();
@@ -65,12 +35,20 @@ class ReportController extends Controller {
 
         return Employee::query()
             ->when( $employeeId, fn( $q ) => $q->where( 'id', $employeeId ) )
+
             ->whereHas( 'payrolls', fn( $q ) =>
                 $q->where( 'month', $formattedMonth )
             )
-            ->with( ['payrolls' => fn( $q ) =>
+
+            ->with( [
+                'payrolls' => fn( $q ) =>
+                $q->where( 'month', $formattedMonth ),
+
+                // 🔹 Advance salary for the same month
+                'advances' => fn( $q ) =>
                 $q->where( 'month', $formattedMonth ),
             ] )
+
             ->orderBy( 'name' )
             ->get();
     }
@@ -107,11 +85,16 @@ class ReportController extends Controller {
     public function payslip( $employeeId, $month ) {
         $month = Carbon::parse( $month )->format( 'Y-m' );
 
-        $payroll = Payroll::with( 'employee' )
+        $payroll = Payroll::with( ['employee'] )
             ->where( 'employee_id', $employeeId )
             ->where( 'month', $month )
             ->firstOrFail();
 
-        return view( 'report.payslip', compact( 'payroll' ) );
+        // 🔹 Advance Salary for this month
+        $advanceAmount = AdvanceSalary::where( 'employee_id', $employeeId )
+            ->where( 'month', $month )
+            ->sum( 'amount' );
+
+        return view( 'report.payslip', compact( 'payroll', 'advanceAmount' ) );
     }
 }

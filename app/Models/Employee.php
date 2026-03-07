@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AdvanceSalary;
 use App\Models\SalaryPayment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -44,5 +45,9 @@ class Employee extends Model {
 
     public function salaryPayments() {
         return $this->hasMany( SalaryPayment::class );
+    }
+
+    public function advances() {
+        return $this->hasMany( AdvanceSalary::class );
     }
 }

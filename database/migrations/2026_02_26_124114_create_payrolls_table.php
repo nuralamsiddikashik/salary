@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->decimal( 'net_payable', 12, 2 );
             $table->integer( 'leave_used' )->default( 0 );
             $table->integer( 'salary_cut_days' )->default( 0 );
+            $table->decimal( 'advance_deduction', 12, 2 )->default( 0 );
 
             $table->timestamps();
         } );
