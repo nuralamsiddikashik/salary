@@ -71,6 +71,7 @@ Route::middleware( 'auth' )->group( function () {
         Route::post( '/store', 'store' )->name( 'advance.store' );
 
         Route::get( '/list', 'index' )->name( 'advance.list' );
+        Route::get( '/advance-report', 'index' )->name( 'advance.index' );
 
     } );
 

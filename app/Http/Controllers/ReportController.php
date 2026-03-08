@@ -11,23 +11,6 @@ use Illuminate\Support\Carbon;
 
 class ReportController extends Controller {
 
-    // private function getEmployees( Request $request, string $month ) {
-    //     $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )->format( 'Y-m' );
-
-    //     $employeeId = $request->integer( 'employee_id' );
-
-    //     return Employee::query()
-    //         ->when( $employeeId, fn( $q ) => $q->where( 'id', $employeeId ) )
-    //         ->whereHas( 'payrolls', fn( $q ) =>
-    //             $q->where( 'month', $formattedMonth )
-    //         )
-    //         ->with( ['payrolls' => fn( $q ) =>
-    //             $q->where( 'month', $formattedMonth ),
-    //         ] )
-    //         ->orderBy( 'name' )
-    //         ->get();
-    // }
-
     private function getEmployees( Request $request, string $month ) {
         $formattedMonth = Carbon::createFromFormat( 'Y-m', $month )->format( 'Y-m' );
 

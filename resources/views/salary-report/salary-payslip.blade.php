@@ -408,7 +408,7 @@
     {{-- Header --}}
     <div class="slip-header">
         <div class="company-block">
-            <div class="company-name">Ashis Auto Solution</div>
+            <div class="company-name">Company Name</div>
             <div class="company-sub">Salary Disbursement</div>
         </div>
         <div class="slip-title-block">
@@ -447,54 +447,93 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    <div class="item-name">Paid Amount</div>
-                    <div class="item-note">{{ ucfirst(str_replace('_', ' ', $payment->payment_type)) }}</div>
-                </td>
-                <td>
-                    <span class="item-note">For {{ \Carbon\Carbon::parse($payment->payroll->month . '-01')->format('F Y') }}</span>
-                </td>
-                <td class="item-amount earn">{{ number_format($payment->paid_amount, 2) }}</td>
-            </tr>
 
-            {{-- Payroll reference row --}}
-            <tr style="background:#fafaf8;">
-                <td>
-                    <div class="item-name" style="font-weight:700;">Gross Salary (Reference)</div>
-                </td>
-                <td><span class="item-note">Monthly base compensation</span></td>
-                <td class="item-amount" style="font-weight:700;">{{ number_format($payment->payroll->employee->total_salary ?? 0, 2) }}</td>
-            </tr>
+            @php
+                $isFirstHalf = $payment->payment_type === 'first_half';
+            @endphp
 
-            @if(($payment->payroll->absent_amount ?? 0) > 0)
-            <tr style="background:#fff8f8;">
-                <td>
-                    <div class="item-name">Absent Deduction</div>
-                    <div class="item-note">{{ $payment->payroll->absent_days ?? 0 }} day(s)</div>
-                </td>
-                <td><span class="item-note">Salary cut for absent</span></td>
-                <td class="item-amount" style="color:#8a1a1a;">− {{ number_format($payment->payroll->absent_amount, 2) }}</td>
-            </tr>
+            @if($isFirstHalf)
+                {{-- ── FIRST HALF: শুধু Gross Salary এবং Half Paid Amount ── --}}
+                <tr style="background:#fafaf8;">
+                    <td>
+                        <div class="item-name" style="font-weight:700;">Gross Salary</div>
+                    </td>
+                    <td><span class="item-note">Monthly base compensation</span></td>
+                    <td class="item-amount" style="font-weight:700;">{{ number_format($payment->payroll->employee->total_salary ?? 0, 2) }}</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="item-name">First Half Payment</div>
+                        <div class="item-note">Advance disbursement</div>
+                    </td>
+                    <td>
+                        <span class="item-note">For {{ \Carbon\Carbon::parse($payment->payroll->month . '-01')->format('F Y') }}</span>
+                    </td>
+                    <td class="item-amount earn">{{ number_format($payment->paid_amount, 2) }}</td>
+                </tr>
+
+            @else
+                {{-- ── FINAL HALF: Gross + সব deduction + Final Amount ── --}}
+                <tr style="background:#fafaf8;">
+                    <td>
+                        <div class="item-name" style="font-weight:700;">Gross Salary</div>
+                    </td>
+                    <td><span class="item-note">Monthly base compensation</span></td>
+                    <td class="item-amount" style="font-weight:700;">{{ number_format($payment->payroll->employee->total_salary ?? 0, 2) }}</td>
+                </tr>
+
+                @if(($payment->payroll->absent_amount ?? 0) > 0)
+                <tr style="background:#fff8f8;">
+                    <td>
+                        <div class="item-name">Absent Deduction</div>
+                        <div class="item-note">{{ $payment->payroll->absent_days ?? 0 }} day(s)</div>
+                    </td>
+                    <td><span class="item-note">Salary cut for absent</span></td>
+                    <td class="item-amount" style="color:#8a1a1a;">− {{ number_format($payment->payroll->absent_amount, 2) }}</td>
+                </tr>
+                @endif
+
+                @if(($payment->payroll->loan_deduction ?? 0) > 0)
+                <tr style="background:#fff8f8;">
+                    <td>
+                        <div class="item-name">Loan Deduction</div>
+                    </td>
+                    <td><span class="item-note">Installment recovery</span></td>
+                    <td class="item-amount" style="color:#8a1a1a;">− {{ number_format($payment->payroll->loan_deduction, 2) }}</td>
+                </tr>
+                @endif
+
+                @if(($payment->payroll->advance_deduction ?? 0) > 0)
+                <tr style="background:#fff8f8;">
+                    <td>
+                        <div class="item-name">Advance Deduction</div>
+                    </td>
+                    <td><span class="item-note">Advance recovered</span></td>
+                    <td class="item-amount" style="color:#8a1a1a;">− {{ number_format($payment->payroll->advance_deduction, 2) }}</td>
+                </tr>
+                @endif
+
+                <tr>
+                    <td>
+                        <div class="item-name">Final Half Payment</div>
+                        <div class="item-note">Remaining balance disbursement</div>
+                    </td>
+                    <td>
+                        <span class="item-note">For {{ \Carbon\Carbon::parse($payment->payroll->month . '-01')->format('F Y') }}</span>
+                    </td>
+                    <td class="item-amount earn">{{ number_format($payment->paid_amount, 2) }}</td>
+                </tr>
             @endif
 
-            @if(($payment->payroll->loan_deduction ?? 0) > 0)
-            <tr style="background:#fff8f8;">
-                <td>
-                    <div class="item-name">Loan Deduction</div>
-                </td>
-                <td><span class="item-note">Installment recovery</span></td>
-                <td class="item-amount" style="color:#8a1a1a;">− {{ number_format($payment->payroll->loan_deduction, 2) }}</td>
-            </tr>
-            @endif
         </tbody>
     </table>
 
     {{-- Net block --}}
     <div class="net-row">
         <div class="net-label-block">
-            <span class="net-eyebrow">Total Amount Paid</span>
-            <div class="net-title">Net Paid</div>
+            <span class="net-eyebrow">{{ $isFirstHalf ? 'First Half Disbursed' : 'Final Half Disbursed' }}</span>
+            <div class="net-title">{{ $isFirstHalf ? 'Half Paid' : 'Net Paid' }}</div>
         </div>
         <div class="net-amount-block">
             <span class="taka">৳</span>{{ number_format($payment->paid_amount, 2) }}

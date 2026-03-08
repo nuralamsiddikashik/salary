@@ -336,7 +336,7 @@
         @endif
 
         <div class="breadcrumb">
-            <a href="{{ route('employee.list') }}">Employees</a>
+            <a href="{{ route('advance.index') }}">Advance Salary List</a>
             <span class="sep">></span>
             <span class="current">Advance Salary</span>
         </div>
@@ -348,11 +348,11 @@
                     <div class="eyebrow">Payroll Management</div>
                     <h1>Advance Salary</h1>
                 </div>
-                <a href="{{ route('employee.list') }}" class="btn-ghost">
+                <a href="{{ route('advance.index') }}" class="btn-ghost">
                     <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                     </svg>
-                    Employees
+                    Advance Salary List
                 </a>
             </div>
 
@@ -449,7 +449,7 @@
                             </svg>
                             Save Advance Salary
                         </button>
-                        <a href="{{ route('employee.list') }}" class="btn-back">
+                        <a href="{{ route('advance.index') }}" class="btn-back">
                             <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                             </svg>
