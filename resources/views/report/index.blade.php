@@ -485,6 +485,101 @@
     }
     .bottom-rule::before,
     .bottom-rule::after { content: ''; flex: 1; height: 1px; background: var(--border-md); }
+    /* ── Print ── */
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin: 8mm 6mm;
+        }
+
+        body { background: #fff !important; }
+
+        .pw {
+            padding: 0 !important;
+            background: #fff !important;
+            min-height: unset !important;
+        }
+
+        /* Hide buttons, filter, bottom rule */
+        .corp-header-right,
+        .filter-card,
+        .bottom-rule,
+        .action-cell form,
+        .del-btn { display: none !important; }
+
+        /* Keep paid badge visible in print */
+        .action-cell { pointer-events: none; }
+
+        .corp-header {
+            padding-bottom: 6px !important;
+            margin-bottom: 10px !important;
+            border-bottom: 2px solid #1a1a18 !important;
+        }
+
+        .corp-header-left h1 { font-size: 1.1rem !important; }
+        .corp-header-left .sub { font-size: 0.65rem !important; }
+        .corp-header-left .eyebrow { font-size: 0.52rem !important; }
+
+        .table-card {
+            border: none !important;
+            border-radius: 0 !important;
+            overflow: visible !important;
+        }
+
+        .table-card-header { padding: 6px 8px !important; }
+        .table-card-title { font-size: 0.6rem !important; }
+        .table-card-count { font-size: 0.6rem !important; }
+
+        .tbl-wrap { overflow: visible !important; }
+
+        .rpt-table {
+            min-width: unset !important;
+            width: 100% !important;
+            font-size: 0.6rem !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .rpt-table * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .grp-hd { font-size: 0.5rem !important; padding: 3px 4px !important; }
+        .col-hd { font-size: 0.52rem !important; padding: 4px 4px !important; }
+
+        .rpt-table tbody td {
+            padding: 3px 4px !important;
+            font-size: 0.58rem !important;
+            white-space: nowrap !important;
+        }
+
+        .c-name  { font-size: 0.6rem !important; }
+        .c-date  { font-size: 0.52rem !important; }
+        .c-mono  { font-size: 0.55rem !important; }
+        .c-amber { font-size: 0.55rem !important; }
+        .c-green { font-size: 0.55rem !important; }
+        .c-red   { font-size: 0.55rem !important; }
+
+        .badge-des, .badge-mo, .badge-absent {
+            font-size: 0.5rem !important;
+            padding: 1px 4px !important;
+        }
+
+        .slip-btn, .paid-badge, .half-badge {
+            font-size: 0.5rem !important;
+            padding: 2px 5px !important;
+        }
+
+        .summary-bar {
+            border-top: 1px solid #d0d0c8 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .sum-item { padding: 5px 8px !important; }
+        .sum-label { font-size: 0.48rem !important; }
+        .sum-value { font-size: 0.7rem !important; }
+    }
 </style>
 
 <div class="pw">
@@ -499,12 +594,22 @@
             </div>
             <div class="corp-header-right">
                 <a href="{{ route('report.pdf', array_filter(['month' => $month, 'year' => $year ?? null, 'employee_id' => $employee_id ?? null])) }}"
-                   class="btn btn-primary">
+                   target="_blank" class="btn btn-outline">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Preview / Print PDF
+                </a>
+                <a href="{{ route('report.pdf', array_filter(['month' => $month, 'year' => $year ?? null, 'employee_id' => $employee_id ?? null, 'type' => 'download'])) }}"
+                   class="btn btn-outline">
                     <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    Export PDF
+                    Download PDF
                 </a>
                 <a href="{{ route('employee.list') }}" class="btn btn-outline">
                     <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -571,13 +676,14 @@
                 <table class="rpt-table">
                     <thead>
                         <tr>
-                            <th colspan="4"  class="grp-hd grp-emp">Employee Info</th>
+                            <th colspan="5"  class="grp-hd grp-emp">Employee Info</th>
                             <th colspan="6"  class="grp-hd grp-pay">Salary Components</th>
                             <th colspan="10" class="grp-hd grp-pay">Payroll — {{ $month }}</th>
                             <th colspan="3"  class="grp-hd grp-loan">Loan Info</th>
                             <th colspan="1"  class="grp-hd grp-emp">Action</th>
                         </tr>
                         <tr>
+                            <th class="col-hd text-center">SL</th>
                             <th class="col-hd text-center">Slip</th>
                             <th class="col-hd">Name</th>
                             <th class="col-hd">Join Date</th>
@@ -625,6 +731,9 @@
                                             + ($payroll->loan_deduction ?? 0);
                         @endphp
                         <tr>
+                            {{-- SL --}}
+                            <td class="text-center" style="color:var(--text-muted);font-size:0.72rem;font-weight:600;">{{ $loop->iteration }}</td>
+
                             {{-- Slip --}}
                             <td class="text-center">
                                 @if($payroll)
@@ -813,7 +922,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="24">
+                            <td colspan="25">
                                 <div class="empty-state">
                                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

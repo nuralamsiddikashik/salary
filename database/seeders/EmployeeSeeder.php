@@ -7,6 +7,6 @@ use Illuminate\Database\Seeder;
 
 class EmployeeSeeder extends Seeder {
     public function run(): void {
-        Employee::factory()->count( 5 )->create();
+        Employee::factory()->count( 50 )->create();
     }
 }

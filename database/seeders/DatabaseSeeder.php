@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Employee;
+use App\Models\Payroll;
 use Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,6 +23,8 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        Employee::factory( 5 )->create();
+        Employee::factory( 50 )->create();
+        Payroll::factory( 50 )->create();
+
     }
 }
