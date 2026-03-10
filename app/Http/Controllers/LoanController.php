@@ -17,28 +17,6 @@ class LoanController extends Controller {
         return view( 'loan.create', compact( 'employees' ) );
     }
 
-    /**
-     * make a loan and 2nd time loan
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    // public function store( Request $request ) {
-    //     $request->validate( [
-    //         'employee_id'       => 'required|exists:employees,id',
-    //         'loan_amount'       => 'required|numeric|min:1',
-    //         'monthly_deduction' => 'required|numeric|min:1',
-    //     ] );
-
-    //     Loan::create( [
-    //         'employee_id'       => $request->employee_id,
-    //         'loan_amount'       => $request->loan_amount,
-    //         'monthly_deduction' => $request->monthly_deduction,
-    //         'remaining_amount'  => $request->loan_amount,
-    //     ] );
-
-    //     return back()->with( 'success', 'Loan Created Successfully' );
-    // }
-
     public function store( Request $request ) {
         $request->validate( [
             'employee_id'       => 'required|exists:employees,id',
