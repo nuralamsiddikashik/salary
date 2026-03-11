@@ -6,7 +6,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller {
-    // Employee List
+    // Employee List and controller for latest payroll
     public function index() {
         $employees = Employee::with( 'latestPayroll' )
             ->latest()
