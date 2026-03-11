@@ -485,6 +485,75 @@
     }
     .bottom-rule::before,
     .bottom-rule::after { content: ''; flex: 1; height: 1px; background: var(--border-md); }
+
+    /* ── Bulk Action Bar ── */
+    .bulk-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--accent-lt);
+        border-bottom: 1px solid #c5d4e3;
+        flex-wrap: wrap;
+    }
+
+    .bulk-bar-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .bulk-type-select {
+        background: var(--surface);
+        border: 1px solid #c5d4e3;
+        border-radius: 5px;
+        color: var(--text-primary);
+        padding: 0.38rem 2rem 0.38rem 0.7rem;
+        font-size: 0.75rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231a3a5c'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 0.85rem;
+        transition: border-color 0.15s;
+    }
+    .bulk-type-select:focus { border-color: var(--accent); }
+
+    .btn-bulk-apply {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.38rem 1rem;
+        background: var(--accent);
+        color: #fff;
+        border: 1px solid var(--accent);
+        border-radius: 5px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .btn-bulk-apply:hover { background: #142d47; }
+    .btn-bulk-apply:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Checkbox styling */
+    .bulk-cb {
+        width: 1rem;
+        height: 1rem;
+        cursor: pointer;
+        accent-color: var(--accent);
+    }
+
+    .cb-col { width: 2.2rem; text-align: center; }
     /* ── Print ── */
     @media print {
         @page {
@@ -672,10 +741,34 @@
                 <span class="table-card-count">{{ count($employees) }} records</span>
             </div>
 
+            <form method="POST" action="{{ route('salary.bulk.pay') }}" id="bulkForm">
+                @csrf
+
+                {{-- Bulk Action Bar --}}
+                <div class="bulk-bar">
+                    <span class="bulk-bar-label">Bulk Payment</span>
+
+                    <select name="payment_type" class="bulk-type-select" required>
+                        <option value="">— Select Payment Type —</option>
+                        <option value="first_half">First Half</option>
+                        <option value="final_half">Final Half</option>
+                    </select>
+
+                    <button type="submit" class="btn-bulk-apply"
+                            onclick="return confirm('Are you sure to apply payment?')">
+                        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Apply Payment
+                    </button>
+                </div>
+            </form>
+
             <div class="tbl-wrap">
                 <table class="rpt-table">
                     <thead>
                         <tr>
+                            <th class="grp-hd grp-emp cb-col"></th>
                             <th colspan="5"  class="grp-hd grp-emp">Employee Info</th>
                             <th colspan="6"  class="grp-hd grp-pay">Salary Components</th>
                             <th colspan="10" class="grp-hd grp-pay">Payroll — {{ $month }}</th>
@@ -683,6 +776,10 @@
                             <th colspan="1"  class="grp-hd grp-emp">Action</th>
                         </tr>
                         <tr>
+                            <th class="col-hd cb-col">
+                                <input type="checkbox" class="bulk-cb" title="Select All" form="bulkForm"
+                                       onclick="document.querySelectorAll('.row-cb').forEach(cb => cb.checked = this.checked)">
+                            </th>
                             <th class="col-hd text-center">SL</th>
                             <th class="col-hd text-center">Slip</th>
                             <th class="col-hd">Name</th>
@@ -731,6 +828,15 @@
                                             + ($payroll->loan_deduction ?? 0);
                         @endphp
                         <tr>
+                            {{-- Checkbox --}}
+                            <td class="cb-col text-center">
+                                @if($payroll)
+                                    <input type="checkbox" class="bulk-cb row-cb" name="payroll_ids[]"
+                                           value="{{ $payroll->id }}" form="bulkForm"
+                                           data-status="{{ $totalPaid >= $netSalary ? 'paid' : ($totalPaid > 0 ? 'half' : 'pending') }}">
+                                @endif
+                            </td>
+
                             {{-- SL --}}
                             <td class="text-center" style="color:var(--text-muted);font-size:0.72rem;font-weight:600;">{{ $loop->iteration }}</td>
 
@@ -863,7 +969,7 @@
                             <td class="text-center" style="white-space:normal;">
                                 <div class="action-cell">
                                 @if($payroll)
-                                    @if($remaining <= 0)
+                                    @if($totalPaid >= $netSalary)
                                         {{-- Fully Paid --}}
                                         <span class="paid-badge">
                                             <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -881,8 +987,7 @@
                                         </span>
                                         <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="pay-btn-partial"
-                                                    onclick="this.disabled=true;this.innerText='...';this.form.submit();">
+                                            <button type="submit" class="pay-btn-partial">
                                                 Pay Final Half
                                             </button>
                                         </form>
@@ -890,8 +995,7 @@
                                         {{-- Pending — Pay First Half --}}
                                         <form action="{{ route('salary.pay', $payroll->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="pay-btn"
-                                                    onclick="this.disabled=true;this.innerText='...';this.form.submit();">
+                                            <button type="submit" class="pay-btn">
                                                 <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                 </svg>
@@ -901,7 +1005,7 @@
                                     @endif
 
                                     {{-- Delete — only while not fully paid --}}
-                                    @if($remaining > 0)
+                                    @if($totalPaid < $netSalary)
                                         <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST"
                                               onsubmit="return confirm('Are you sure? This will reverse leave & loan deduction.')">
                                             @csrf
@@ -922,7 +1026,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="25">
+                            <td colspan="26">
                                 <div class="empty-state">
                                     <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -935,7 +1039,7 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
+            </div>{{-- end tbl-wrap --}}
 
             @if(count($employees) > 0)
             <div class="summary-bar" style="grid-template-columns: repeat(6, 1fr);">

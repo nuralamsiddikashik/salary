@@ -72,8 +72,15 @@ class PayrollController extends Controller {
 
             $salaryCutDays = $absentDays - $leaveDays;
 
-            $dailySalary  = round( $employee->total_salary / $daysInMonth, 2 );
-            $absentAmount = round( $dailySalary * $salaryCutDays, 2 );
+            /*
+            |--------------------------------------------------------------------------
+            | Salary Calculation (Round Figure)
+            |--------------------------------------------------------------------------
+             */
+
+            $dailySalary = round( $employee->total_salary / $daysInMonth );
+
+            $absentAmount = round( $dailySalary * $salaryCutDays );
 
             $employee->used_leave += $leaveDays;
             $employee->save();
@@ -111,7 +118,7 @@ class PayrollController extends Controller {
 
             /*
             |--------------------------------------------------------------------------
-            | Net Payable
+            | Net Payable (Round Figure)
             |--------------------------------------------------------------------------
              */
 
@@ -119,8 +126,7 @@ class PayrollController extends Controller {
                 $employee->total_salary
                  - $absentAmount
                  - $loanDeduction
-                 - $advanceAmount,
-                2
+                 - $advanceAmount
             );
 
             /*

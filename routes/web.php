@@ -52,6 +52,8 @@ Route::middleware( 'auth' )->group( function () {
 
     Route::controller( SalaryPaymentController::class )->group( function () {
         Route::post( '/salary/pay/{payroll}', 'pay' )->name( 'salary.pay' );
+        Route::post( '/salary/bulk-pay', 'bulkPay' )
+            ->name( 'salary.bulk.pay' );
     } );
 
     Route::controller( SalaryPaymentReportController::class )->group( function () {
