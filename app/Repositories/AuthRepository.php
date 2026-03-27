@@ -12,7 +12,7 @@ class AuthRepository {
     public function login( array $data ): array {
         $key = 'login:' . request()->ip();
 
-        // 🔒 Rate limit check (brute force protection)
+        // 🔒 Rate limit check
         if ( RateLimiter::tooManyAttempts( $key, 5 ) ) {
             return [
                 'status'  => false,
@@ -25,7 +25,6 @@ class AuthRepository {
         // 🔒 Prevent user enumeration
         if ( !$user ) {
 
-            // Fake hash check to equalize timing
             Hash::check( $data['password'], '$2y$10$usesomesillystringforsalt$' );
 
             RateLimiter::hit( $key, 60 );
@@ -41,7 +40,21 @@ class AuthRepository {
             ];
         }
 
-        // 🔒 Password verification
+        // ✅ 🔥 NEW: Account suspend check
+        if ( !$user->is_active ) {
+
+            Log::warning( 'Suspended user login attempt', [
+                'user_id' => $user->id,
+                'ip'      => request()->ip(),
+            ] );
+
+            return [
+                'status'  => false,
+                'message' => 'Your account has been suspended. Contact admin.',
+            ];
+        }
+
+        // 🔒 Password check
         if ( !Hash::check( $data['password'], $user->password ) ) {
 
             RateLimiter::hit( $key, 60 );
@@ -57,13 +70,11 @@ class AuthRepository {
             ];
         }
 
-        // 🔒 Clear login attempts
+        // 🔒 Clear attempts
         RateLimiter::clear( $key );
 
-        // 🔒 Login user
         Auth::login( $user );
 
-        // 🔒 Prevent session fixation
         request()->session()->regenerate();
 
         Log::info( 'User logged in', [
