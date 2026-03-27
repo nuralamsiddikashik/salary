@@ -43,13 +43,24 @@ class UserController extends Controller {
     public function update( Request $request, $id ) {
         $user = User::findOrFail( $id );
 
-        $user->update( [
+        $data = [
             'role'      => $request->role,
-            'is_active' => (int) $request->input( 'is_active', 0 ), // ✅ FINAL FIX
-        ] );
+            'is_active' => (int) $request->input( 'is_active', 0 ),
+        ];
+
+        // 🔥 Password only update if provided
+        if ( $request->filled( 'password' ) ) {
+            $request->validate( [
+                'password' => 'min:6|confirmed',
+            ] );
+
+            $data['password'] = Hash::make( $request->password );
+        }
+
+        $user->update( $data );
 
         $user->permissions()->sync( $request->permissions ?? [] );
 
-        return back()->with( 'success', 'User Updated' );
+        return back()->with( 'success', 'User Updated Successfully' );
     }
 }

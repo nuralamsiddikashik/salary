@@ -467,6 +467,7 @@
             @forelse($users as $user)
             <form method="POST" action="{{ route('user.update', $user->id) }}">
                 @csrf
+                @method('PUT')
 
                 <div class="user-card">
 
@@ -507,6 +508,26 @@
                             <span class="role-badge {{ $user->role }}" id="badge-{{ $user->id }}">
                                 {{ ucfirst($user->role) }}
                             </span>
+                        </div>
+
+                        {{-- Password --}}
+                        <div class="field-row">
+                            <span class="field-label-sm">Password</span>
+                            <input type="password"
+                                   name="password"
+                                   class="role-select"
+                                   style="flex:1;"
+                                   placeholder="Leave blank to keep current password">
+                        </div>
+
+                        {{-- Confirm Password --}}
+                        <div class="field-row">
+                            <span class="field-label-sm">Confirm</span>
+                            <input type="password"
+                                   name="password_confirmation"
+                                   class="role-select"
+                                   style="flex:1;"
+                                   placeholder="Leave blank to keep current password">
                         </div>
 
                         {{-- Permissions --}}

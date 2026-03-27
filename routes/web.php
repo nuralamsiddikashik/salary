@@ -228,12 +228,6 @@ Route::middleware( 'auth' )->group( function () {
     | User Management (Admin only)
     |--------------------------------------------------------------------------
      */
-    // Route::middleware( 'permission:user.manage' )->group( function () {
-
-    //     Route::get( '/users', [UserController::class, 'index'] )->name( 'users.index' );
-    //     Route::post( '/users/{id}', [UserController::class, 'update'] )->name( 'user.update' );
-
-    // } );
 
     Route::middleware( ['auth', 'permission:user.manage'] )->group( function () {
 
@@ -250,7 +244,7 @@ Route::middleware( 'auth' )->group( function () {
             ->name( 'users.store' );
 
         // 🔹 Update user (role + permission + suspend)
-        Route::post( '/users/{id}', [UserController::class, 'update'] )
+        Route::put( '/users/{id}', [UserController::class, 'update'] )
             ->name( 'user.update' );
 
     } );
