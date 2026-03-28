@@ -8,6 +8,8 @@ use Illuminate\Database\Seeder;
 class PermissionSeeder extends Seeder {
     public function run() {
         $permissions = [
+            'dashboard.view',
+
             'employee.create',
             'employee.view',
             'employee.delete',

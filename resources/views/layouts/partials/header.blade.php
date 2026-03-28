@@ -398,6 +398,7 @@
 
         {{-- MAIN --}}
         <span class="sb-section-label">Main</span>
+        @if(canAccess('dashboard.view'))
         <a href="{{ route('dashboard') }}"
            class="sb-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <span class="sb-link-icon">
@@ -407,6 +408,7 @@
             </span>
             Dashboard
         </a>
+        @endif
 
         {{-- MANAGEMENT --}}
         <span class="sb-section-label">Management</span>
